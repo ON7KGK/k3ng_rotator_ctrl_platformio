@@ -1,40 +1,40 @@
 # K3NG Rotator Controller - Arduino UNO R4 Minima Edition
 
-## 🎯 Description
+## Description
 
 Version améliorée et portée du [K3NG Rotator Controller](https://github.com/k3ng/k3ng_rotator_controller) pour **PlatformIO** avec support complet pour **Arduino UNO R4 Minima** (Renesas RA4M1).
 
 Ce projet a été adapté depuis l'architecture AVR (Arduino Mega 2560) vers l'architecture ARM Cortex-M4 du UNO R4 Minima, avec optimisation et ajout de nombreuses fonctionnalités.
 
-## ✨ Fonctionnalités principales
+## Fonctionnalités principales
 
 ### Fonctionnalités de base
-- ✅ **Contrôle Azimut + Élévation** (AZ/EL)
-- ✅ **Émulation Yaesu GS-232B**
-- ✅ **Écran Nextion** (Serial1)
-- ✅ **GPS NMEA** sur Serial2 matériel (pins A4/A5)
-- ✅ **Moon Tracking** (suivi lunaire)
-- ✅ **Sun Tracking** (suivi solaire)
-- ✅ **Satellite Tracking** (suivi satellite avec TLE, AOS/LOS)
-- ✅ **Ethernet** (support shield W5100/W5500)
-- ✅ **Alerte sonore**
-- ✅ **Indicateur de rotation**
-- ✅ **Encodeurs rotatifs de preset** (AZ + EL)
-- ✅ **Horloge/Clock** (synchronisation GPS)
+- **Contrôle Azimut + Élévation** (AZ/EL)
+- **Émulation Yaesu GS-232B**
+- **Écran Nextion** (Serial1)
+- **GPS NMEA** sur Serial2 matériel (pins A4/A5)
+- **Moon Tracking** (suivi lunaire)
+- **Sun Tracking** (suivi solaire)
+- **Satellite Tracking** (suivi satellite avec TLE, AOS/LOS)
+- **Ethernet** (support shield W5100/W5500)
+- **Alerte sonore**
+- **Indicateur de rotation**
+- **Encodeurs rotatifs de preset** (AZ + EL)
+- **Horloge/Clock** (synchronisation GPS)
 
 ### Fonctionnalités avancées testées
-- ✅ Détection de fin de course (LIMIT_SENSE)
-- ✅ Buffer temporisé Yaesu (TIMED_BUFFER)
-- ✅ Texte d'aide série (SERIAL_HELP_TEXT)
-- ✅ Mode Park & AutoPark
-- ✅ Limites de rotation manuelle (AZ/EL)
-- ✅ Correction azimut/élévation par table
-- ✅ Détection de blocage rotation (STALL_DETECTION)
-- ✅ Contrôle de pins auxiliaires (ANCILLARY_PIN_CONTROL)
-- ✅ Support joystick analogique
-- ✅ Compatibilité Ham Radio Deluxe
+- Détection de fin de course (LIMIT_SENSE)
+- Buffer temporisé Yaesu (TIMED_BUFFER)
+- Texte d'aide série (SERIAL_HELP_TEXT)
+- Mode Park & AutoPark
+- Limites de rotation manuelle (AZ/EL)
+- Correction azimut/élévation par table
+- Détection de blocage rotation (STALL_DETECTION)
+- Contrôle de pins auxiliaires (ANCILLARY_PIN_CONTROL)
+- Support joystick analogique
+- Compatibilité Ham Radio Deluxe
 
-## 🔧 Spécifications techniques
+## Spécifications techniques
 
 ### Matériel supporté
 - **Carte principale** : Arduino UNO R4 Minima (Renesas RA4M1)
@@ -50,7 +50,7 @@ Ce projet a été adapté depuis l'architecture AVR (Arduino Mega 2560) vers l'a
 - **Serial1** (D0/D1) : Écran Nextion @ 115200 bauds
 - **Serial2** (A4/A5) : Module GPS @ 9600 bauds (UART matériel)
 
-## 🚀 Installation et compilation
+## Installation et compilation
 
 ### Prérequis
 - [PlatformIO IDE](https://platformio.org/) (extension VSCode recommandée)
@@ -70,7 +70,7 @@ pio run -e uno_r4_minima --target upload
 pio run -e rotator_controller
 ```
 
-## 📝 Configuration
+## Configuration
 
 ### Fichiers de configuration principaux
 - **`include/rotator_features.h`** : Activation/désactivation des fonctionnalités
@@ -86,7 +86,7 @@ Dans `include/rotator_features.h`, décommentez la ligne correspondante :
 #define FEATURE_SATELLITE_TRACKING      // Active le suivi satellite
 ```
 
-## 🔌 Câblage GPS
+## Câblage GPS
 
 Le GPS utilise le port série matériel Serial2 sur les pins :
 - **A5 (RX)** ← TXD du module GPS
@@ -94,7 +94,7 @@ Le GPS utilise le port série matériel Serial2 sur les pins :
 - **VCC** → 3.3V ou 5V selon module
 - **GND** → GND
 
-## 🎨 Améliorations spécifiques UNO R4 Minima
+## Améliorations spécifiques UNO R4 Minima
 
 ### Corrections de compatibilité ARM
 1. **Serial2 matériel** sur A4/A5 (pas besoin de SoftwareSerial)
@@ -108,7 +108,7 @@ Le GPS utilise le port série matériel Serial2 sur les pins :
 - Support complet de l'écosystème Arduino Renesas
 - Gestion mémoire adaptée (32 KB RAM vs 8 KB sur Mega)
 
-## 📚 Documentation
+## Documentation
 
 ### Documentation officielle K3NG
 - [Wiki K3NG Rotator Controller](https://github.com/k3ng/k3ng_rotator_controller/wiki)
@@ -118,7 +118,7 @@ Le GPS utilise le port série matériel Serial2 sur les pins :
 - [Arduino UNO R4 Minima](https://docs.arduino.cc/hardware/uno-r4-minima/)
 - [Spécifications techniques](https://docs.platformio.org/en/latest/boards/renesas-ra/uno_r4_minima.html)
 
-## 🛠️ Développement
+## Développement
 
 ### Structure du projet
 ```
@@ -145,7 +145,7 @@ lib_deps =
     # Ajoutez vos bibliothèques ici
 ```
 
-## 🐛 Problèmes connus et solutions
+## Problèmes connus et solutions
 
 ### Bibliothèques AVR incompatibles
 Les bibliothèques suivantes ne fonctionnent **pas** sur UNO R4 :
@@ -160,7 +160,7 @@ Si vous activez une fonctionnalité et obtenez une erreur de compilation :
 1. Vérifiez que le prototype existe dans `include/rotator_functions.h`
 2. Vérifiez les dépendances dans `include/rotator_dependencies.h`
 
-## 📖 Exemples de commandes série
+## Exemples de commandes série
 
 ```
 # Rotation azimut absolue
@@ -182,7 +182,7 @@ P
 ?
 ```
 
-## 🤝 Contributions
+## Contributions
 
 Ce projet est basé sur le travail original de K3NG. Les modifications pour PlatformIO et UNO R4 Minima incluent :
 - Configuration PlatformIO complète
@@ -191,16 +191,17 @@ Ce projet est basé sur le travail original de K3NG. Les modifications pour Plat
 - Support Serial2 matériel pour GPS
 - Tests et validation de toutes les fonctionnalités principales
 
-## 📄 Licence
+## Licence
 
 Ce projet hérite de la licence du projet original K3NG Rotator Controller.
 
 Voir le fichier [LICENSE](LICENSE) pour plus de détails.
 
-## 🙏 Remerciements
+## Remerciements
 
 - **Anthony Good (K3NG)** - Auteur original du K3NG Rotator Controller
 - **Neil (N0SFH)** - Portage initial vers VSCode PlatformIO
+- **Claude (Anthropic)** - Assistance au portage ARM et résolution des problèmes de compilation
 - La communauté PlatformIO
 - Arduino et Renesas pour le UNO R4 Minima
 
