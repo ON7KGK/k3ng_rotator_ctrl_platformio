@@ -1338,6 +1338,8 @@ byte az_slow_start_step = 0;
 unsigned long az_last_step_time = 0;
 byte az_slow_down_step = 0;
 unsigned long az_timed_slow_down_start_time = 0;
+unsigned long az_position_check_start_time = 0;
+byte az_position_check_in_progress = 0;
 byte backslash_command = 0;
 byte normal_az_speed_voltage = 0;
 byte current_az_speed_voltage = 0;
@@ -1429,6 +1431,8 @@ struct config_t {
   unsigned long el_last_step_time = 0;
   byte el_slow_down_step = 0;
   unsigned long el_timed_slow_down_start_time = 0;
+  unsigned long el_position_check_start_time = 0;
+  byte el_position_check_in_progress = 0;
   byte normal_el_speed_voltage = 0;
   byte current_el_speed_voltage = 0;
   byte el_state = IDLE;
@@ -11599,9 +11603,15 @@ void service_rotation(){
   if ((az_state != IDLE) && (az_request_queue_state == IN_PROGRESS_TO_TARGET) ) {
     if ((az_state == NORMAL_CW) || (az_state == SLOW_START_CW) || (az_state == SLOW_DOWN_CW)) {
       if ((abs(raw_azimuth - target_raw_azimuth) < (AZIMUTH_TOLERANCE)) || ((raw_azimuth > target_raw_azimuth) && ((raw_azimuth - target_raw_azimuth) < ((AZIMUTH_TOLERANCE + 5))))) {
-        delay(50);
-        read_azimuth(0);
-        if ((abs(raw_azimuth - target_raw_azimuth) < (AZIMUTH_TOLERANCE)) || ((raw_azimuth > target_raw_azimuth) && ((raw_azimuth - target_raw_azimuth) < ((AZIMUTH_TOLERANCE + 5))))) {
+        // Non-blocking position check using millis() instead of delay(50)
+        if (!az_position_check_in_progress) {
+          az_position_check_start_time = millis();
+          az_position_check_in_progress = 1;
+        }
+        if ((millis() - az_position_check_start_time) >= 50) {
+          read_azimuth(0);
+          az_position_check_in_progress = 0;
+          if ((abs(raw_azimuth - target_raw_azimuth) < (AZIMUTH_TOLERANCE)) || ((raw_azimuth > target_raw_azimuth) && ((raw_azimuth - target_raw_azimuth) < ((AZIMUTH_TOLERANCE + 5))))) {
           rotator(DEACTIVATE, CW, 10);
           rotator(DEACTIVATE, CCW, 10);
           az_state = IDLE;
@@ -11628,13 +11638,20 @@ void service_rotation(){
             }
           #endif
 
+          }
         }
       }
     } else {
       if ((abs(raw_azimuth - target_raw_azimuth) < (AZIMUTH_TOLERANCE)) || ((raw_azimuth < target_raw_azimuth) && ((target_raw_azimuth - raw_azimuth) < ((AZIMUTH_TOLERANCE + 5))))) {
-        delay(50);
-        read_azimuth(0);
-        if ((abs(raw_azimuth - target_raw_azimuth) < (AZIMUTH_TOLERANCE)) || ((raw_azimuth < target_raw_azimuth) && ((target_raw_azimuth - raw_azimuth) < ((AZIMUTH_TOLERANCE + 5))))) {
+        // Non-blocking position check using millis() instead of delay(50)
+        if (!az_position_check_in_progress) {
+          az_position_check_start_time = millis();
+          az_position_check_in_progress = 1;
+        }
+        if ((millis() - az_position_check_start_time) >= 50) {
+          read_azimuth(0);
+          az_position_check_in_progress = 0;
+          if ((abs(raw_azimuth - target_raw_azimuth) < (AZIMUTH_TOLERANCE)) || ((raw_azimuth < target_raw_azimuth) && ((target_raw_azimuth - raw_azimuth) < ((AZIMUTH_TOLERANCE + 5))))) {
           rotator(DEACTIVATE, CW, 11);
           rotator(DEACTIVATE, CCW, 11);
           az_state = IDLE;
@@ -11661,6 +11678,7 @@ void service_rotation(){
             }
           #endif
 
+          }
         }
       }
     }
@@ -11886,9 +11904,17 @@ void service_rotation(){
     if ((el_state == NORMAL_UP) || (el_state == SLOW_START_UP) || (el_state == SLOW_DOWN_UP)) {
       if ((abs(elevation - target_elevation) < (ELEVATION_TOLERANCE)) || ((elevation > target_elevation) && ((elevation - target_elevation) < ((ELEVATION_TOLERANCE + 5))))) {
         #ifndef OPTION_NO_ELEVATION_CHECK_TARGET_DELAY
-          delay(50);
+          // Non-blocking position check using millis() instead of delay(50)
+          if (!el_position_check_in_progress) {
+            el_position_check_start_time = millis();
+            el_position_check_in_progress = 1;
+          }
+          if ((millis() - el_position_check_start_time) >= 50) {
+            read_elevation(0);
+            el_position_check_in_progress = 0;
+        #else
+          read_elevation(0);
         #endif //OPTION_NO_ELEVATION_CHECK_TARGET_DELAY
-        read_elevation(0);
         if ((abs(elevation - target_elevation) < (ELEVATION_TOLERANCE)) || ((elevation > target_elevation) && ((elevation - target_elevation) < ((ELEVATION_TOLERANCE + 5))))) {
           rotator(DEACTIVATE, UP, 17);
           rotator(DEACTIVATE, DOWN, 17);
@@ -11911,14 +11937,25 @@ void service_rotation(){
           #endif // defined(FEATURE_PARK)
 
         }
+        #ifndef OPTION_NO_ELEVATION_CHECK_TARGET_DELAY
+          }
+        #endif //OPTION_NO_ELEVATION_CHECK_TARGET_DELAY
       }
     } else {
       read_elevation(0);
       if ((abs(elevation - target_elevation) <= (ELEVATION_TOLERANCE)) || ((elevation < target_elevation) && ((target_elevation - elevation) < ((ELEVATION_TOLERANCE + 5))))) {
         #ifndef OPTION_NO_ELEVATION_CHECK_TARGET_DELAY
-          delay(50);
+          // Non-blocking position check using millis() instead of delay(50)
+          if (!el_position_check_in_progress) {
+            el_position_check_start_time = millis();
+            el_position_check_in_progress = 1;
+          }
+          if ((millis() - el_position_check_start_time) >= 50) {
+            read_elevation(0);
+            el_position_check_in_progress = 0;
+        #else
+          read_elevation(0);
         #endif //OPTION_NO_ELEVATION_CHECK_TARGET_DELAY
-        read_elevation(0);
         if ((abs(elevation - target_elevation) <= (ELEVATION_TOLERANCE)) || ((elevation < target_elevation) && ((target_elevation - elevation) < ((ELEVATION_TOLERANCE + 5))))) {
           rotator(DEACTIVATE, UP, 18);
           rotator(DEACTIVATE, DOWN, 18);
@@ -11940,6 +11977,9 @@ void service_rotation(){
             }
           #endif // defined(FEATURE_PARK)
         }
+        #ifndef OPTION_NO_ELEVATION_CHECK_TARGET_DELAY
+          }
+        #endif //OPTION_NO_ELEVATION_CHECK_TARGET_DELAY
       }
     }
   }
