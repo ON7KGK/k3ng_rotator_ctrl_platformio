@@ -200,6 +200,7 @@ Voir le fichier [LICENSE](LICENSE) pour plus de détails.
 ## 🙏 Remerciements
 
 - **Anthony Good (K3NG)** - Auteur original du K3NG Rotator Controller
+- **Neil (N0SFH)** - Portage initial vers VSCode PlatformIO
 - La communauté PlatformIO
 - Arduino et Renesas pour le UNO R4 Minima
 
