@@ -2,9 +2,11 @@
 
 ## Description
 
-Version améliorée et portée du [K3NG Rotator Controller](https://github.com/k3ng/k3ng_rotator_controller) pour **PlatformIO** avec support complet pour **Arduino UNO R4 Minima** (Renesas RA4M1).
+Version du [K3NG Rotator Controller](https://github.com/k3ng/k3ng_rotator_controller) pour **PlatformIO** pour **Arduino UNO R4 Minima** (Renesas RA4M1).
 
-Ce projet a été adapté depuis l'architecture AVR (Arduino Mega 2560) vers l'architecture ARM Cortex-M4 du UNO R4 Minima, avec optimisation et ajout de nombreuses fonctionnalités.
+Ce projet a été adapté depuis un Arduino Mega 2560 vers un Arduino UNO R4 minima.
+
+Certaines fonctionnalités ne sont pas encore portées.
 
 ## Fonctionnalités principales
 
@@ -22,7 +24,7 @@ Ce projet a été adapté depuis l'architecture AVR (Arduino Mega 2560) vers l'a
 - **Encodeurs rotatifs de preset** (AZ + EL)
 - **Horloge/Clock** (synchronisation GPS)
 
-### Fonctionnalités avancées testées
+### A tester
 - Détection de fin de course (LIMIT_SENSE)
 - Buffer temporisé Yaesu (TIMED_BUFFER)
 - Texte d'aide série (SERIAL_HELP_TEXT)
@@ -34,16 +36,6 @@ Ce projet a été adapté depuis l'architecture AVR (Arduino Mega 2560) vers l'a
 - Support joystick analogique
 - Compatibilité Ham Radio Deluxe
 
-## Spécifications techniques
-
-### Matériel supporté
-- **Carte principale** : Arduino UNO R4 Minima (Renesas RA4M1)
-- **Processeur** : ARM Cortex-M4 @ 48 MHz
-- **Mémoire** : 32 KB RAM, 256 KB Flash, 8 KB EEPROM
-
-### Utilisation mémoire (configuration complète)
-- **RAM** : 32.1% utilisé (10516 / 32768 bytes) - **68% disponible**
-- **Flash** : 61.6% utilisé (161488 / 262144 bytes) - **38% disponible**
 
 ### Configuration ports série
 - **Serial** (USB) : Communication de contrôle @ 9600 bauds
@@ -56,37 +48,13 @@ Ce projet a été adapté depuis l'architecture AVR (Arduino Mega 2560) vers l'a
 - [PlatformIO IDE](https://platformio.org/) (extension VSCode recommandée)
 - Arduino UNO R4 Minima
 
-### Compilation
-```bash
-# Compiler pour UNO R4 Minima
-pio run -e uno_r4_minima
-
-# Compiler et téléverser
-pio run -e uno_r4_minima --target upload
-```
-
-### Compilation pour Arduino Mega 2560 (legacy)
-```bash
-pio run -e rotator_controller
-```
-
-## Configuration
-
 ### Fichiers de configuration principaux
 - **`include/rotator_features.h`** : Activation/désactivation des fonctionnalités
 - **`include/rotator_settings.h`** : Paramètres du rotateur (vitesses, limites, calibration)
 - **`include/rotator_pins.h`** : Configuration des pins I/O
 - **`platformio.ini`** : Configuration PlatformIO et bibliothèques
 
-### Activation d'une fonctionnalité
-Dans `include/rotator_features.h`, décommentez la ligne correspondante :
-```cpp
-#define FEATURE_ELEVATION_CONTROL      // Active le contrôle d'élévation
-#define FEATURE_GPS                     // Active le support GPS
-#define FEATURE_SATELLITE_TRACKING      // Active le suivi satellite
-```
-
-## Câblage GPS
+### Câblage GPS
 
 Le GPS utilise le port série matériel Serial2 sur les pins :
 - **A5 (RX)** ← TXD du module GPS
@@ -94,21 +62,6 @@ Le GPS utilise le port série matériel Serial2 sur les pins :
 - **VCC** → 3.3V ou 5V selon module
 - **GND** → GND
 
-## Améliorations spécifiques UNO R4 Minima
-
-### Corrections de compatibilité ARM
-1. **Serial2 matériel** sur A4/A5 (pas besoin de SoftwareSerial)
-2. **Exclusion Stack Pointer (SP)** - non disponible sur architecture Renesas
-3. **Pin A6** - conditionnée (n'existe pas sur UNO R4)
-4. **Bibliothèques incompatibles exclues** : TimerOne, TimerFive, RTClib (AVR uniquement)
-5. **60+ prototypes de fonctions** ajoutés dans `rotator_functions.h`
-
-### Optimisations
-- Compilation optimisée pour ARM Cortex-M4
-- Support complet de l'écosystème Arduino Renesas
-- Gestion mémoire adaptée (32 KB RAM vs 8 KB sur Mega)
-
-## Documentation
 
 ### Documentation officielle K3NG
 - [Wiki K3NG Rotator Controller](https://github.com/k3ng/k3ng_rotator_controller/wiki)
@@ -118,10 +71,7 @@ Le GPS utilise le port série matériel Serial2 sur les pins :
 - [Arduino UNO R4 Minima](https://docs.arduino.cc/hardware/uno-r4-minima/)
 - [Spécifications techniques](https://docs.platformio.org/en/latest/boards/renesas-ra/uno_r4_minima.html)
 
-## Développement
 
-### Structure du projet
-```
 k3ng_rotator_ctrl_platformio-main/
 ├── include/              # Fichiers d'en-tête (.h)
 │   ├── rotator_features.h
@@ -134,7 +84,7 @@ k3ng_rotator_ctrl_platformio-main/
 │   └── k3ng_rotator_controller.cpp
 ├── platformio.ini        # Configuration PlatformIO
 └── README.md
-```
+
 
 ### Ajout de bibliothèques
 Éditez `platformio.ini` section `[env:uno_r4_minima]` :
@@ -160,27 +110,7 @@ Si vous activez une fonctionnalité et obtenez une erreur de compilation :
 1. Vérifiez que le prototype existe dans `include/rotator_functions.h`
 2. Vérifiez les dépendances dans `include/rotator_dependencies.h`
 
-## Exemples de commandes série
 
-```
-# Rotation azimut absolue
-M 180
-
-# Rotation élévation
-W 45
-
-# Status
-C
-
-# Arrêt
-S
-
-# Parking
-P
-
-# Aide (si OPTION_SERIAL_HELP_TEXT activé)
-?
-```
 
 ## Contributions
 
