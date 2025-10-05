@@ -1,6 +1,5 @@
 /* -------------------------------------   Pin Definitions ------------------------------------------ 
 
-  You need to look at these and set them appropriately !
 
   Most pins can be disabled by setting them to 0 (zero).  If you're not using a pin or function, set it to 0.
 
@@ -10,8 +9,8 @@
 
 /* azimuth pins --------------------- (use just the azimuth pins for an azimuth-only rotator) */
 
-#define rotate_cw 6              // goes high to activate rotator R (CW) rotation - pin 1 on Yaesu connector
-#define rotate_ccw 7             // goes high to activate rotator L (CCW) rotation - pin 2 on Yaesu connector
+#define rotate_cw A0              // goes high to activate rotator R (CW) rotation - pin 1 on Yaesu connector
+#define rotate_ccw A1             // goes high to activate rotator L (CCW) rotation - pin 2 on Yaesu connector
 #define rotate_cw_ccw  0         // goes high for both CW and CCW rotation
 #define rotate_cw_pwm 0          // optional - PWM CW output - set to 0 to disable (must be PWM capable pin)
 #define rotate_ccw_pwm 0         // optional - PWM CCW output - set to 0 to disable (must be PWM capable pin)
@@ -21,7 +20,7 @@
 #define button_cw 0              // normally open button to ground for manual CW rotation (schematic pin: A2)
 #define button_ccw 0             // normally open button to ground for manual CCW rotation (schematic pin: A3)
 #define serial_led 0             // LED blinks when command is received on serial port (set to 0 to disable)
-#define rotator_analog_az A0     // reads analog azimuth voltage from rotator - pin 4 on Yaesu connector
+#define rotator_analog_az A3     // reads analog azimuth voltage from rotator - pin 4 on Yaesu connector
 #define azimuth_speed_voltage 0  // optional - PWM output for speed control voltage feed into rotator (on continually unlike rotate_cw_pwm and rotate_ccw_pwm)
 #define overlap_led 0            // line goes active when azimuth rotator is in overlap (> 360 rotators)
 #define brake_az 0               // goes high to disengage azimuth brake (set to 0 to disable)
@@ -38,15 +37,15 @@
 
 /*----------- elevation pins --------------*/
 #ifdef FEATURE_ELEVATION_CONTROL
-  #define rotate_up 8               // goes high to activate rotator elevation up
-  #define rotate_down 9             // goes high to activate rotator elevation down
+  #define rotate_up A2               // goes high to activate rotator elevation up
+  #define rotate_down 8             // goes high to activate rotator elevation down
   #define rotate_up_or_down 0       // goes high when elevation up or down is activated
   #define rotate_up_pwm 0           // optional - PWM UP output - set to 0 to disable (must be PWM capable pin)
   #define rotate_down_pwm 0         // optional - PWM DOWN output - set to 0 to disable (must be PWM capable pin)
   #define rotate_up_down_pwm 0      // optional - PWM on both UP and DOWN (must be PWM capable pin)
   #define rotate_up_freq 0          // optional - UP variable frequency output
   #define rotate_down_freq 0        // optional - UP variable frequency output
-  #define rotator_analog_el A1      // reads analog elevation voltage from rotator
+  #define rotator_analog_el 0      // reads analog elevation voltage from rotator
   #define button_up 0               // normally open button to ground for manual up elevation
   #define button_down 0             // normally open button to ground for manual down rotation
   #define brake_el 0                // goes high to disengage elevation brake (set to 0 to disable)
@@ -105,15 +104,15 @@
 #endif //FEATURE_JOYSTICK_CONTROL
 
 #if defined(FEATURE_AZ_POSITION_HH12_AS5045_SSI) || defined(FEATURE_AZ_POSITION_HH12_AS5045_SSI_RELATIVE)
-  #define az_hh12_clock_pin 11
-  #define az_hh12_cs_pin 12
-  #define az_hh12_data_pin 13
+  #define az_hh12_clock_pin 4
+  #define az_hh12_cs_pin 2
+  #define az_hh12_data_pin 3
 #endif //FEATURE_AZ_POSITION_HH_12
 
 #ifdef FEATURE_EL_POSITION_HH12_AS5045_SSI
-  #define el_hh12_clock_pin 53 //11
-  #define el_hh12_cs_pin 52 //12
-  #define el_hh12_data_pin 51 //13
+  #define el_hh12_clock_pin 6 
+  #define el_hh12_cs_pin 5 
+  #define el_hh12_data_pin 7
 #endif //FEATURE_EL_POSITION_HH_12
 
 #ifdef FEATURE_PARK
@@ -129,20 +128,20 @@
 #endif //FEATURE_LIMIT_SENSE
 
 #ifdef FEATURE_AZ_POSITION_INCREMENTAL_ENCODER
-  #define az_incremental_encoder_pin_phase_a 18 //3 must be an interrupt capable pin
-  #define az_incremental_encoder_pin_phase_b 19 //3 // must be an interrupt capable pin
-  #define az_incremental_encoder_pin_phase_z 22 //4
-  #define AZ_POSITION_INCREMENTAL_ENCODER_A_PIN_INTERRUPT 5 //0             // Uno: pin 2 = interrupt 0, pin 3 = interrupt 1 ; Mega: pin 2 = interrupt 0, pin 3 = interrupt 1, pin 21 = interrupt 2, pin 20 = interrupt 3, pin 19 = interrupt 4, pin 18 = interrupt 5
-  #define AZ_POSITION_INCREMENTAL_ENCODER_B_PIN_INTERRUPT 4 //1             // Uno: pin 2 = interrupt 0, pin 3 = interrupt 1 ; Mega: pin 2 = interrupt 0, pin 3 = interrupt 1, pin 21 = interrupt 2, pin 20 = interrupt 3, pin 19 = interrupt 4, pin 18 = interrupt 5
+  #define az_incremental_encoder_pin_phase_a 0 //3 must be an interrupt capable pin
+  #define az_incremental_encoder_pin_phase_b 0 //3 // must be an interrupt capable pin
+  #define az_incremental_encoder_pin_phase_z 0 //4
+  #define AZ_POSITION_INCREMENTAL_ENCODER_A_PIN_INTERRUPT 0 //0             // Uno: pin 2 = interrupt 0, pin 3 = interrupt 1 ; Mega: pin 2 = interrupt 0, pin 3 = interrupt 1, pin 21 = interrupt 2, pin 20 = interrupt 3, pin 19 = interrupt 4, pin 18 = interrupt 5
+  #define AZ_POSITION_INCREMENTAL_ENCODER_B_PIN_INTERRUPT 0 //1             // Uno: pin 2 = interrupt 0, pin 3 = interrupt 1 ; Mega: pin 2 = interrupt 0, pin 3 = interrupt 1, pin 21 = interrupt 2, pin 20 = interrupt 3, pin 19 = interrupt 4, pin 18 = interrupt 5
                                                                               // read http://arduino.cc/en/Reference/AttachInterrupt for details on hardware and interrupts
 #endif //FEATURE_AZ_POSITION_INCREMENTAL_ENCODER
 
 #ifdef FEATURE_EL_POSITION_INCREMENTAL_ENCODER
-  #define el_incremental_encoder_pin_phase_a 2 //18 //2 // must be an interrupt capable pin
-  #define el_incremental_encoder_pin_phase_b 3 //19 //3 // must be an interrupt capable pin
-  #define el_incremental_encoder_pin_phase_z 5 //22 //4
+  #define el_incremental_encoder_pin_phase_a 0 //18 //2 // must be an interrupt capable pin
+  #define el_incremental_encoder_pin_phase_b 0 //19 //3 // must be an interrupt capable pin
+  #define el_incremental_encoder_pin_phase_z 0 //22 //4
   #define EL_POSITION_INCREMENTAL_ENCODER_A_PIN_INTERRUPT 0 //5 //0             // Uno: pin 2 = interrupt 0, pin 3 = interrupt 1 ; Mega: pin 2 = interrupt 0, pin 3 = interrupt 1, pin 21 = interrupt 2, pin 20 = interrupt 3, pin 19 = interrupt 4, pin 18 = interrupt 5
-  #define EL_POSITION_INCREMENTAL_ENCODER_B_PIN_INTERRUPT 1 //4 //1             // Uno: pin 2 = interrupt 0, pin 3 = interrupt 1 ; Mega: pin 2 = interrupt 0, pin 3 = interrupt 1, pin 21 = interrupt 2, pin 20 = interrupt 3, pin 19 = interrupt 4, pin 18 = interrupt 5
+  #define EL_POSITION_INCREMENTAL_ENCODER_B_PIN_INTERRUPT 0 //4 //1             // Uno: pin 2 = interrupt 0, pin 3 = interrupt 1 ; Mega: pin 2 = interrupt 0, pin 3 = interrupt 1, pin 21 = interrupt 2, pin 20 = interrupt 3, pin 19 = interrupt 4, pin 18 = interrupt 5
                                                                               // read http://arduino.cc/en/Reference/AttachInterrupt for details on hardware and interrupts
 #endif //FEATURE_EL_POSITION_INCREMENTAL_ENCODER
 
@@ -197,8 +196,8 @@
 //#define reset_pin 22 // if defined, goes HIGH to reset unit
 
 #if defined(FEATURE_AZ_POSITION_A2_ABSOLUTE_ENCODER) || defined(FEATURE_EL_POSITION_A2_ABSOLUTE_ENCODER)
-  #define pin_sei_bus_busy 24
-  #define pin_sei_bus_send_receive 22  
+  #define pin_sei_bus_busy 0
+  #define pin_sei_bus_send_receive 0
 #endif
 
 #ifdef FEATURE_YWROBOT_I2C_DISPLAY
