@@ -12,6 +12,10 @@
 // #define HARDWARE_WB6KCN_K3NG         // K3NG test jig - do not use
 // #define HARDWARE_TEST         // K3NG test jig - do not use
 
+// Nano R4 Distributed System - RS485 Communication
+// #define HARDWARE_NANO_R4_SHACK      // Shack unit: Display, Buttons, Ethernet, RS485 Master - customize rotator_features_nano_r4_shack.h, rotator_pins_nano_r4_shack.h
+// #define HARDWARE_NANO_R4_ANTENNA    // Antenna unit: Motors, Sensors, GPS, RS485 Slave - customize rotator_features_nano_r4_antenna.h, rotator_pins_nano_r4_antenna.h
+
 
 /* Serial port class definitions for various devices
 
@@ -41,7 +45,7 @@
 
 // do not modify anything below this line
 
-#if defined(HARDWARE_M0UPU) || defined(HARDWARE_EA4TX_ARS_USB) || defined(HARDWARE_WB6KCN) || defined(HARDWARE_TEST) || defined(HARDWARE_WB6KCN_K3NG)
+#if defined(HARDWARE_M0UPU) || defined(HARDWARE_EA4TX_ARS_USB) || defined(HARDWARE_WB6KCN) || defined(HARDWARE_TEST) || defined(HARDWARE_WB6KCN_K3NG) || defined(HARDWARE_NANO_R4_SHACK) || defined(HARDWARE_NANO_R4_ANTENNA)
   #define HARDWARE_CUSTOM
 #endif
 

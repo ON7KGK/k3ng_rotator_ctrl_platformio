@@ -1258,6 +1258,12 @@
 #ifdef HARDWARE_TEST
   #include "rotator_pins_test.h"
 #endif
+#ifdef HARDWARE_NANO_R4_SHACK
+  #include "rotator_pins_nano_r4_shack.h"
+#endif
+#ifdef HARDWARE_NANO_R4_ANTENNA
+  #include "rotator_pins_nano_r4_antenna.h"
+#endif
 #if !defined(HARDWARE_CUSTOM)
   #include "rotator_pins.h"
 #endif
@@ -1278,7 +1284,13 @@
 #endif
 #ifdef HARDWARE_TEST
   #include "rotator_settings_test.h"
-#endif      
+#endif
+#ifdef HARDWARE_NANO_R4_SHACK
+  #include "rotator_settings_nano_r4_shack.h"
+#endif
+#ifdef HARDWARE_NANO_R4_ANTENNA
+  #include "rotator_settings_nano_r4_antenna.h"
+#endif
 #if !defined(HARDWARE_CUSTOM)
   #include "rotator_settings.h"
 #endif

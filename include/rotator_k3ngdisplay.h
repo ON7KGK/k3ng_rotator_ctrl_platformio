@@ -45,10 +45,16 @@
 #endif
 #ifdef HARDWARE_TEST
   #include "rotator_features_test.h"
-#endif    
+#endif
+#ifdef HARDWARE_NANO_R4_SHACK
+  #include "rotator_features_nano_r4_shack.h"
+#endif
+#ifdef HARDWARE_NANO_R4_ANTENNA
+  #include "rotator_features_nano_r4_antenna.h"
+#endif
 #if !defined(HARDWARE_CUSTOM)
-  #include "rotator_features.h" 
-#endif   
+  #include "rotator_features.h"
+#endif
 #ifdef HARDWARE_M0UPU
   #include "rotator_pins_m0upu.h"
 #endif
@@ -60,6 +66,12 @@
 #endif
 #ifdef HARDWARE_TEST
   #include "rotator_pins_test.h"
+#endif
+#ifdef HARDWARE_NANO_R4_SHACK
+  #include "rotator_pins_nano_r4_shack.h"
+#endif
+#ifdef HARDWARE_NANO_R4_ANTENNA
+  #include "rotator_pins_nano_r4_antenna.h"
 #endif
 #if !defined(HARDWARE_CUSTOM)
   #include "rotator_pins.h"
