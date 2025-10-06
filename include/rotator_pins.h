@@ -1,9 +1,15 @@
-/* -------------------------------------   Pin Definitions ------------------------------------------ 
+/* -------------------------------------   Pin Definitions ------------------------------------------
 
 
   Most pins can be disabled by setting them to 0 (zero).  If you're not using a pin or function, set it to 0.
 
   Pins > 99 = remote unit pin, for example: pin 109 = pin 9 on remote unit, pin A0+100 = pin A0 on remote unit
+
+  Arduino Nano R4 Additional Pins:
+    - A6 and A7 are available as analog inputs (not available on UNO R4 Minima)
+    - A6: Analog input only (cannot be used as digital I/O)
+    - A7: Analog input only (cannot be used as digital I/O)
+    - These pins can be used for additional sensors, potentiometers, or analog voltage readings
 
 */
 
