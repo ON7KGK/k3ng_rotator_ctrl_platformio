@@ -1115,9 +1115,22 @@
 #define CODE_VERSION "2023.10.06.2200"
 
 
-#include <avr/pgmspace.h>
-#include <EEPROM.h>
-#include <math.h>
+// Platform-specific includes
+#if defined(ARDUINO_GIGA) || defined(ARDUINO_ARCH_MBED)
+  // STM32/Mbed platform - no AVR includes
+  #include <EEPROM.h>
+  #include <math.h>
+  #include "platform_compatibility.h"
+
+  // Stack pointer not available on ARM Cortex
+  #define SP 0
+
+#else
+  // AVR platform
+  #include <avr/pgmspace.h>
+  #include <EEPROM.h>
+  #include <math.h>
+#endif
 
 #include "rotator_hardware.h"
 
@@ -1744,11 +1757,16 @@ struct config_t {
     SFE_UBLOX_GNSS myGNSS;
   #endif
 
-  // Arduino UNO R4 Minima Serial2 configuration for GPS on pins A4(TX)/A5(RX)
+  // Serial2 configuration for GPS
+  // Arduino UNO R4 Minima: Custom UART on pins A4(TX)/A5(RX)
+  // Arduino Giga R1 WiFi: Native Serial2 hardware UART
   #if defined(ARDUINO_ARCH_RENESAS)
     #define UART2_TX_PIN (18u)  // Pin A4
     #define UART2_RX_PIN (19u)  // Pin A5
     UART _UART2_(UART2_TX_PIN, UART2_RX_PIN);
+  #elif defined(ARDUINO_GIGA)
+    // Giga R1 has native Serial2 on pins 17(RX2)/16(TX2)
+    // No custom UART declaration needed - Serial2 is available by default
   #endif
 
 #endif //FEATURE_GPS

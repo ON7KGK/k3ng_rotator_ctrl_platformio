@@ -1,10 +1,13 @@
-// 
+//
 // contributed by Matt VK5ZM
-// 
+//
 
 #include "rotator_debug.h"
 
 #define FEATURE_ETHERNET
+
+// Platform compatibility for dtostrf (Giga R1 / STM32)
+#include "platform_compatibility.h"
 
 void DebugClass::print(const char *str)
 {
