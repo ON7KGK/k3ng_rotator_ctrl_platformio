@@ -26,8 +26,11 @@
 // Global objects
 // ===================================================================
 RS485Protocol rs485;
-MCP23017Helper mcp;
 LiquidCrystal_I2C lcd(LCD_I2C_ADDRESS, LCD_COLS, LCD_ROWS);
+
+#ifdef FEATURE_MCP23017_BUTTONS
+MCP23017Helper mcp;
+#endif
 
 // ===================================================================
 // Position tracking
@@ -88,8 +91,12 @@ void setup() {
     setupLCD();
     showSplashScreen();
 
+    #ifdef FEATURE_MCP23017_BUTTONS
     // Initialize MCP23017
     setupMCP23017();
+    #else
+    DEBUG_PRINTLN("MCP23017 disabled (no FEATURE_MCP23017_BUTTONS)");
+    #endif
 
     // Initialize RS485
     setupRS485();
@@ -105,11 +112,13 @@ void setup() {
 // Main loop
 // ===================================================================
 void loop() {
+    #ifdef FEATURE_MCP23017_BUTTONS
     // Update MCP button states
     mcp.update();
 
     // Handle button presses
     handleButtons();
+    #endif
 
     // Handle RS485 responses from ANTENNA
     handleRS485Responses();
@@ -154,11 +163,16 @@ void setupRS485() {
 // Setup MCP23017
 // ===================================================================
 void setupMCP23017() {
+    #ifdef FEATURE_MCP23017_BUTTONS
     if (!mcp.begin(MCP_I2C_ADDRESS)) {
         DEBUG_PRINTLN("! MCP23017 not found!");
         lcd.clear();
         lcd.setCursor(0, 1);
         lcd.print("MCP23017 ERROR!");
+        lcd.setCursor(0, 2);
+        lcd.print("Comment out");
+        lcd.setCursor(0, 3);
+        lcd.print("FEATURE_MCP23017");
         while(1);  // Halt
     }
 
@@ -170,6 +184,7 @@ void setupMCP23017() {
     // mcp.pinMode(MCP_BTN_DOWN, INPUT_PULLUP);
 
     DEBUG_PRINTLN("MCP23017 initialized");
+    #endif
 }
 
 // ===================================================================
@@ -205,6 +220,7 @@ void showSplashScreen() {
 // Handle button presses
 // ===================================================================
 void handleButtons() {
+    #ifdef FEATURE_MCP23017_BUTTONS
     // CW button
     if (mcp.buttonPressed(MCP_BTN_CW)) {
         DEBUG_PRINTLN("Button CW pressed");
@@ -230,6 +246,7 @@ void handleButtons() {
     }
 
     // Add more buttons (UP, DOWN, STOP) here...
+    #endif
 }
 
 // ===================================================================

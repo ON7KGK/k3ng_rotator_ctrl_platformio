@@ -16,6 +16,16 @@
 #define SHACK_CONFIG_H
 
 // ===================================================================
+// FEATURE ACTIVATION (comment/uncomment to enable/disable)
+// ===================================================================
+// Like K3NG style: comment out features you don't have/want
+
+#define FEATURE_MCP23017_BUTTONS      // MCP23017 I/O expander for buttons
+// #define FEATURE_DIRECT_GPIO_BUTTONS   // Use Nano R4 GPIO pins for buttons (not implemented yet)
+// #define FEATURE_ETHERNET              // Ethernet interface (not implemented yet)
+// #define FEATURE_NEXTION_DISPLAY       // Nextion display on Serial2 (not implemented yet)
+
+// ===================================================================
 // HARDWARE CONFIGURATION
 // ===================================================================
 
