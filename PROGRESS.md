@@ -6,6 +6,12 @@
 **Branche:** NanoR4_Test_RS485
 **Date dernière mise à jour:** 11 octobre 2025
 
+> **⚠️ IMPORTANT:** Mettre à jour ce fichier après chaque phase complétée !
+> - Déplacer la phase de "⏳ En cours" vers "✅ Terminée"
+> - Ajouter résultats, problèmes rencontrés, solutions
+> - Mettre à jour la date
+> - Commit et push sur GitHub
+
 ---
 
 ## 📋 Vue d'ensemble
