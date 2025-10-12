@@ -148,17 +148,21 @@
 #define rotator_analog_az 0
 #define rotator_analog_el 0
 
-#if defined(FEATURE_AZ_POSITION_HH12_AS5045_SSI) || defined(FEATURE_AZ_POSITION_HH12_AS5045_SSI_RELATIVE)
-  #define az_hh12_clock_pin 0
-  #define az_hh12_cs_pin 0
-  #define az_hh12_data_pin 0
+// Virtual rotary encoders - position from RS485 (dummy pins to satisfy K3NG)
+#if defined(FEATURE_AZ_POSITION_ROTARY_ENCODER) || defined(FEATURE_EL_POSITION_ROTARY_ENCODER)
+  #define az_rotary_position_pin1 0             // Dummy - not used
+  #define az_rotary_position_pin2 0             // Dummy - not used
+  #define el_rotary_position_pin1 0             // Dummy - not used
+  #define el_rotary_position_pin2 0             // Dummy - not used
 #endif
 
-#ifdef FEATURE_EL_POSITION_HH12_AS5045_SSI
-  #define el_hh12_clock_pin 0
-  #define el_hh12_cs_pin 0
-  #define el_hh12_data_pin 0
-#endif
+// HH12 SSI encoder pins (always define to avoid compilation errors)
+#define az_hh12_clock_pin 0
+#define az_hh12_cs_pin 0
+#define az_hh12_data_pin 0
+#define el_hh12_clock_pin 0
+#define el_hh12_cs_pin 0
+#define el_hh12_data_pin 0
 
 // Limit switches - NOT USED on Remote (on Master unit)
 #ifdef FEATURE_LIMIT_SENSE
@@ -166,12 +170,25 @@
   #define el_limit_sense_pin 0
 #endif
 
-// Ethernet - NOT SUPPORTED on Remote (Master only)
+// Ethernet - NOT PHYSICALLY supported on Remote (Master only)
+// But we define the pin to satisfy K3NG code - Ethernet is never initialized on Remote
 #ifdef FEATURE_ETHERNET
-  #define ethernet_cs_pin 0
-  // Remote unit does not support Ethernet
-  #error "FEATURE_ETHERNET is not supported on Remote unit. Only Master supports Ethernet."
+  #define ethernet_cs_pin 0                  // Dummy pin - Ethernet not used on Remote
 #endif
+
+/* ========== GPS & TRACKING PINS (DUMMY - NOT USED) ========== */
+// Physical GPS and tracking are on Master unit
+// These are dummy pins to satisfy K3NG compilation
+#define gps_sync 0                          // GPS sync indicator (not used)
+#define moon_tracking_active_pin 0          // Moon tracking indicator (not used)
+#define moon_tracking_activate_line 0       // Moon tracking activate (not used)
+#define moon_tracking_button 0              // Moon tracking button (not used)
+#define sun_tracking_active_pin 0           // Sun tracking indicator (not used)
+#define sun_tracking_activate_line 0        // Sun tracking activate (not used)
+#define sun_tracking_button 0               // Sun tracking button (not used)
+#define satellite_tracking_active_pin 0     // Satellite tracking indicator (not used)
+#define satellite_tracking_activate_line 0  // Satellite tracking activate (not used)
+#define satellite_tracking_button 0         // Satellite tracking button (not used)
 
 /* ========== MISCELLANEOUS ========== */
 

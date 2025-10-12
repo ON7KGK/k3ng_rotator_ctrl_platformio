@@ -115,9 +115,8 @@
 #endif
 
 /* ========== LOCAL CONTROL BUTTONS (OPTIONAL) ========== */
-// Local buttons at antenna site for manual control
-// Useful for maintenance at 100m from shack
-// Set to 0 to disable, or assign a pin number to enable
+// Set to 0 to disable local buttons (control via RS485 from Remote)
+// Set to actual pin number if you want local buttons at antenna site
 
 #define button_cw 0                         // normally open button to ground for manual CW rotation
 #define button_ccw 0                        // normally open button to ground for manual CCW rotation
@@ -139,6 +138,29 @@
   #define park_in_progress_pin 0            // goes high when park is in progress
   #define parked_pin 0                      // goes high when in parked position
 #endif
+
+/* ========== TRACKING FEATURES (GPS/MOON/SUN) ========== */
+
+#ifdef FEATURE_GPS
+  #define gps_sync 0                        // GPS sync indicator pin (optional)
+#endif
+
+#ifdef FEATURE_MOON_TRACKING
+  #define moon_tracking_active_pin 0        // indicates moon tracking is active
+  #define moon_tracking_activate_line 0     // line to activate moon tracking
+  #define moon_tracking_button 0            // button to activate moon tracking
+#endif
+
+#ifdef FEATURE_SUN_TRACKING
+  #define sun_tracking_active_pin 0         // indicates sun tracking is active
+  #define sun_tracking_activate_line 0      // line to activate sun tracking
+  #define sun_tracking_button 0             // button to activate sun tracking
+#endif
+
+// Satellite tracking pins (always define even if feature disabled)
+#define satellite_tracking_active_pin 0   // indicates satellite tracking is active
+#define satellite_tracking_activate_line 0 // line to activate satellite tracking
+#define satellite_tracking_button 0       // button to activate satellite tracking
 
 /* ========== DISABLED FEATURES ON MASTER ========== */
 

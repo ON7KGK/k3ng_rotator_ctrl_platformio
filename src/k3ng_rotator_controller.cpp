@@ -1134,7 +1134,7 @@
   #include "rotator_features_test.h"
 #endif
 
-// RS485 Master/Remote Architecture - Phase 4
+// RS485 Master/Remote Architecture - Phase 4 (Wrapper approach)
 #ifdef USE_ROTATOR_FEATURES_MASTER
   #include "rotator_features_master.h"   // ANTENNA Unit (Master) configuration
 #elif defined(USE_ROTATOR_FEATURES_REMOTE)
@@ -1265,7 +1265,7 @@
   #include "rotator_pins_test.h"
 #endif
 
-// RS485 Master/Remote Architecture - Phase 4
+// RS485 Master/Remote Architecture - Phase 4 (Wrapper approach)
 #ifdef USE_ROTATOR_PINS_MASTER
   #include "rotator_pins_master.h"        // ANTENNA Unit (Master) pin allocation
 #elif defined(USE_ROTATOR_PINS_REMOTE)
@@ -1913,6 +1913,11 @@ struct config_t {
 /* ------------------ Include function prototypes (for PlatformIO) */
 #include "rotator_functions.h"
 
+/* ------------------ RS485 Wrapper (Phase 4 - Clean integration) */
+#if defined(FEATURE_RS485_MASTER) || defined(FEATURE_RS485_REMOTE)
+  #include "k3ng_rs485_integration.h"
+#endif
+
 /* ------------------ let's start doing some stuff now that we got the formalities out of the way --------------------*/
 
 void setup() {
@@ -1935,19 +1940,9 @@ void setup() {
 
   run_this_once();
 
-  // RS485 Master/Remote initialization - Phase 4
-  #ifdef FEATURE_RS485_MASTER
-    rs485_master_init();
-    #ifdef DEBUG_RS485
-      control_port->println("RS485 Master initialized");
-    #endif
-  #endif
-
-  #ifdef FEATURE_RS485_REMOTE
-    rs485_remote_init();
-    #ifdef DEBUG_RS485
-      control_port->println("RS485 Remote initialized");
-    #endif
+  // RS485 Wrapper initialization (Phase 4)
+  #if defined(FEATURE_RS485_MASTER) || defined(FEATURE_RS485_REMOTE)
+    rs485_wrapper_setup();
   #endif
 
 }
@@ -2159,6 +2154,11 @@ void loop() {
 
   #ifdef OPTION_MORE_SERIAL_CHECKS
     check_serial();
+  #endif
+
+  // RS485 Wrapper service (Phase 4)
+  #if defined(FEATURE_RS485_MASTER) || defined(FEATURE_RS485_REMOTE)
+    rs485_wrapper_loop();
   #endif
 
 } // loop 

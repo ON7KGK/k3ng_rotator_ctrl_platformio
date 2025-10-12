@@ -27,6 +27,13 @@
 
 #define FEATURE_RS485_REMOTE               // RS485 Remote mode - sends commands, receives position broadcasts
 
+/* ========== POSITION REPORTING (VIRTUAL) ========== */
+
+// Remote receives position from Master via RS485, no physical sensors
+// Define dummy sensor to satisfy K3NG dependencies
+#define FEATURE_AZ_POSITION_ROTARY_ENCODER // Virtual encoder - position from RS485
+#define FEATURE_EL_POSITION_ROTARY_ENCODER // Virtual encoder - position from RS485
+
 /* ========== USER INTERFACE - DISPLAY ========== */
 
 // Choose ONE display option:
@@ -86,14 +93,20 @@
 // #define FEATURE_EL_POSITION_POTENTIOMETER    // On Master unit
 
 // GPS & Tracking on Master unit
-// #define FEATURE_GPS                     // On Master unit (Serial2 A4/A5)
-// #define FEATURE_CLOCK                   // On Master unit
-// #define FEATURE_MOON_TRACKING           // On Master unit
-// #define FEATURE_SUN_TRACKING            // On Master unit
-// #define FEATURE_SATELLITE_TRACKING      // On Master unit
+// Physical GPS hardware is on Master, but we need these features defined
+// for K3NG compilation dependencies (types like tmElements_t, cTime, etc.)
+// The Remote displays data received via RS485, doesn't use these features directly
+#define FEATURE_GPS                        // For TinyGPS types (no physical GPS)
+#define OPTION_GPS_USE_TINY_GPS_LIBRARY    // Use TinyGPS library types
+#define FEATURE_CLOCK                      // For Time library types (tmElements_t)
+#define FEATURE_MOON_TRACKING              // For moon2 types (cTime, etc.)
+#define FEATURE_SUN_TRACKING               // For sunpos types (cSunCoordinates)
+// #define FEATURE_SATELLITE_TRACKING      // Disabled - not implemented yet
 
-// Ethernet NOT supported on Remote (Master only)
-// #define FEATURE_ETHERNET                // ONLY on Master unit
+// Ethernet NOT PHYSICALLY supported on Remote (Master only)
+// However, we define FEATURE_ETHERNET to satisfy K3NG code compilation
+// The Ethernet library types are compiled but hardware is never initialized
+#define FEATURE_ETHERNET                   // For compilation only - no physical Ethernet on Remote
 
 // Hardware safety features on Master
 // #define az_limit_cw                     // On Master unit

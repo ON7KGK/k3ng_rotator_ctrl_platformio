@@ -42,14 +42,12 @@
 
 /* ========== GPS & TRACKING ========== */
 
-// Temporarily disabled for Phase 4 initial testing
-// Will be re-enabled once basic functionality is validated
-// #define FEATURE_GPS                        // GPS on Serial2 (A4/A5)
-// #define OPTION_GPS_USE_TINY_GPS_LIBRARY    // Use TinyGPS library for GPS parsing
-// #define FEATURE_CLOCK                      // Real-time clock for tracking
-// #define FEATURE_MOON_TRACKING              // Moon tracking calculations
-// #define FEATURE_SUN_TRACKING               // Sun tracking calculations
-// #define FEATURE_SATELLITE_TRACKING         // Satellite tracking support
+#define FEATURE_GPS                        // GPS on Serial2 (A4/A5)
+#define OPTION_GPS_USE_TINY_GPS_LIBRARY    // Use TinyGPS library for GPS parsing
+#define FEATURE_CLOCK                      // Real-time clock for tracking
+#define FEATURE_MOON_TRACKING              // Moon tracking calculations
+#define FEATURE_SUN_TRACKING               // Sun tracking calculations
+// #define FEATURE_SATELLITE_TRACKING      // Satellite tracking support - Not implemented yet
 
 /* ========== NETWORKING (OPTIONAL) ========== */
 
