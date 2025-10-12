@@ -45,6 +45,16 @@ else
     echo "Using specified port: $PORT"
 fi
 echo ""
+echo "=========================================="
+echo "⚠️  IMPORTANT: Arduino Nano R4 Bootloader"
+echo "=========================================="
+echo ""
+echo "1. Press RESET button 2x QUICKLY on your Nano R4"
+echo "2. Wait for the LED to blink SLOWLY (bootloader mode)"
+echo "3. Press ENTER to start upload"
+echo ""
+read -p "Press ENTER when ready..." dummy
+echo ""
 echo "Building and uploading..."
 echo ""
 
