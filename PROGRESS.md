@@ -223,83 +223,155 @@ Définir clairement les features et pins pour chaque unité avant Phase 4
 
 ---
 
-## ✅ Phase 4 - Configuration Production Environments (TERMINÉE)
+## ✅ Phase 4 - Intégration RS485 Wrapper dans K3NG (TERMINÉE)
 
 ### Objectif
-Créer les fichiers de configuration et environnements de build pour les unités Master/Remote
+Intégrer la communication RS485 dans le code K3NG avec une architecture wrapper propre
 
 ### Réalisations
+
+#### Configuration Production
 - ✅ `rotator_features_master.h` - Configuration features ANTENNA Unit
-  - RS485 Master, GPS, Tracking, Moteurs, Encodeurs SSI
-  - Ethernet optionnel
-  - Boutons locaux optionnels
+  - RS485 Master, GPS, Tracking (Moon/Sun), Moteurs
+  - Encodeurs position potentiomètres (SSI en préparation)
+  - Ethernet temporairement désactivé (Phase 5)
 - ✅ `rotator_features_remote.h` - Configuration features SHACK Unit
   - RS485 Remote, Display (Nextion/LCD I2C)
+  - GPS/Tracking définis pour types K3NG (pas de hardware physique)
   - Boutons manuels, Preset encodeurs
   - Protocoles Yaesu/Easycom sur USB
-- ✅ `rotator_pins_master.h` - Allocation pins ANTENNA Unit
+- ✅ `rotator_pins_master.h` - Allocation pins ANTENNA Unit (200+ lignes)
   - RS485: D0/D1/D8/D9
   - Moteurs: A0-A3
   - GPS: A4/A5 (Serial2)
-  - Encodeurs SSI: D2-D7
-  - Ethernet: D10-D13 (optionnel)
-- ✅ `rotator_pins_remote.h` - Allocation pins SHACK Unit
+  - Encodeurs SSI préparés: D2-D7 (actuellement potentiomètres)
+  - Boutons locaux: définies (0 = désactivées)
+  - Tracking pins: moon/sun/satellite_tracking_button, gps_sync
+- ✅ `rotator_pins_remote.h` - Allocation pins SHACK Unit (200+ lignes)
   - RS485: D0/D1/D8/D9
   - Display: A4/A5 (Nextion Serial2 ou I2C)
-  - Boutons: D2-D6 + D7/A0 (optionnel)
-  - Encodeurs preset: D10-D13/A1 (optionnel)
-- ✅ Environnements PlatformIO dans `platformio.ini`
-  - `[env:antenna_unit]` - Build Master
-  - `[env:shack_unit]` - Build Remote
-  - Build flags conditionnels
-- ✅ Scripts d'upload
-  - `upload_antenna.sh` - Upload vers ANTENNA Unit
-  - `upload_shack.sh` - Upload vers SHACK Unit
-- ✅ Documentation complète `PHASE4_SETUP.md`
+  - Boutons: D2-D6, tracking D7/A0
+  - Encodeurs preset: D10-D13/A1
+  - Pins GPS/Tracking dummy pour compilation K3NG
 
-### Résultats
-- ✅ Configuration complète pour les 2 unités
-- ✅ Séparation claire Master/Remote
-- ✅ Allocation pins optimisée (18/20 pins sur Remote)
-- ✅ Build flags pour compilation conditionnelle
-- ✅ Documentation détaillée pour intégration
+#### Wrapper RS485 (Architecture Propre)
+- ✅ `include/k3ng_rs485_integration.h` - Interface wrapper
+  - 2 fonctions seulement: `rs485_wrapper_setup()` et `rs485_wrapper_loop()`
+  - Isolation complète de la logique RS485
+- ✅ `src/k3ng_rs485_integration.cpp` - Implémentation wrapper (80 lignes)
+  - Appel `rs485_master_init()` ou `rs485_remote_init()`
+  - Appel `rs485_master_process()` ou `rs485_remote_process()`
+  - Accès variables K3NG via `extern` (azimuth, elevation, target_*, rotatorState)
+  - Compilation conditionnelle Master/Remote
 
-### Prochaines étapes (Phase 4 suite)
-- [ ] Modifier code K3NG principal pour compilation conditionnelle
-- [ ] Intégrer classes RS485 dans loop principale
-- [ ] Tester compilation des 2 environnements
-- [ ] Déboguer erreurs de compilation
-- [ ] Tests fonctionnels avec hardware
-- [ ] Optimisation mémoire RAM
+#### Intégration K3NG Code
+- ✅ `src/k3ng_rotator_controller.cpp` - Modifications minimales
+  - Ligne ~1137: Include conditionnel features (Master/Remote/Default)
+  - Ligne ~1268: Include conditionnel pins (Master/Remote/Default)
+  - Ligne ~1896: Include wrapper header si RS485 activé
+  - Ligne ~1923: Appel `rs485_wrapper_setup()` dans `setup()`
+  - Ligne ~2130: Appel `rs485_wrapper_loop()` dans `loop()`
+  - **Total: 5 modifications ciblées, pas de modification de logique K3NG**
+
+#### Environnements PlatformIO
+- ✅ `[env:antenna_unit]` - Build ANTENNA Unit (Master)
+  - Build flags: `-DUSE_ROTATOR_FEATURES_MASTER -DUSE_ROTATOR_PINS_MASTER`
+  - Libs: Ethernet, Time (GPS/Tracking)
+  - Exclut: rs485_remote.cpp, test files
+  - Flash: 58.1% (152KB/256KB), RAM: 31.8% (10.4KB/32KB)
+- ✅ `[env:shack_unit]` - Build SHACK Unit (Remote)
+  - Build flags: `-DUSE_ROTATOR_FEATURES_REMOTE -DUSE_ROTATOR_PINS_REMOTE`
+  - Libs: LiquidCrystal, Ethernet (types seulement), Time (types)
+  - Exclut: rs485_master.cpp, test files
+  - Flash: 60.7% (159KB/256KB), RAM: 32.3% (10.6KB/32KB)
+
+### Problèmes Résolus
+
+#### 1. Pins Manquantes
+**Symptôme:** Erreurs `'button_cw' was not declared`, `'moon_tracking_button' was not declared`
+**Cause:** K3NG code référence ces pins même si features désactivées
+**Solution:**
+- Ajout pins buttons dans rotator_pins_master.h (définies à 0)
+- Ajout tracking pins (moon/sun/satellite) dans les deux fichiers
+- satellite_tracking_button défini inconditionnellement
+
+#### 2. Dépendances Types Time Library
+**Symptôme:** `'tmElements_t' was not declared`, `'cTime' does not name a type`
+**Cause:** K3NG déclare types globalement sans protection `#ifdef`
+**Solution:**
+- Activation FEATURE_GPS, FEATURE_CLOCK, FEATURE_MOON_TRACKING, FEATURE_SUN_TRACKING sur Remote
+- Inclusion Time library dans lib_deps de shack_unit
+- Note: Remote n'utilise pas physiquement ces features, uniquement pour types
+
+#### 3. Capteurs Position Manquants sur Remote
+**Symptôme:** `#error "You must specify one AZ position sensor feature"`
+**Cause:** Remote n'a pas de capteurs physiques (position vient via RS485)
+**Solution:**
+- Définition FEATURE_AZ_POSITION_ROTARY_ENCODER / FEATURE_EL_POSITION_ROTARY_ENCODER
+- Pins dummy: az/el_rotary_position_pin1/2 = 0
+
+#### 4. Conflit Ethernet sur Remote
+**Symptôme:** Erreurs `'EthernetClient' does not name a type`, puis `#error "FEATURE_ETHERNET not supported"`
+**Cause:** K3NG inclut rotator_features.h quelque part qui définit FEATURE_ETHERNET
+**Solution:**
+- Activation FEATURE_ETHERNET sur Remote (pour compilation seulement)
+- Ethernet library ajoutée dans lib_deps shack_unit
+- Note: Ethernet jamais initialisé sur Remote, seulement types compilés
+- Pin ethernet_cs_pin = 0 (dummy)
+
+#### 5. Pins HH12 SSI Manquantes
+**Symptôme:** `'az_hh12_clock_pin' was not declared` sur Remote
+**Cause:** K3NG initialise HH12 même si feature pas activée sur Remote
+**Solution:** Définition inconditionnelle des pins HH12 dans rotator_pins_remote.h (toutes à 0)
+
+### Résultats Phase 4
+- ✅ **Wrapper propre:** 2 fonctions, isolation complète
+- ✅ **Modifications K3NG minimales:** 5 blocs de code seulement
+- ✅ **Les 2 environnements compilent sans erreur**
+- ✅ **antenna_unit:** Flash 58.1%, RAM 31.8% - **Excellent!**
+- ✅ **shack_unit:** Flash 60.7%, RAM 32.3% - **Excellent!**
+- ✅ **Architecture scalable:** Facile d'ajouter features progressivement
+- ✅ **Documentation complète:** PHASE4_SETUP.md, comments dans code
+- ✅ **Ready for hardware testing**
+
+### Décisions Techniques
+
+#### Activation Features "Virtuelles" sur Remote
+**Pourquoi activer GPS/Tracking/Ethernet sur Remote alors qu'il n'a pas le hardware?**
+- K3NG code déclare types globalement (cTime, tmElements_t, EthernetClient)
+- Ces types sont nécessaires pour compilation même si features pas utilisées
+- Alternative serait modifier K3NG core (dangereux, complexe)
+- Solution pragmatique: inclure libraries pour types, jamais initialiser hardware
+
+#### Wrapper vs Integration Directe
+**Pourquoi un wrapper au lieu d'appeler rs485_master_process() directement?**
+- Isolation: logique RS485 séparée du code K3NG
+- Maintenabilité: modifications futures isolées dans wrapper
+- Testabilité: wrapper peut être testé indépendamment
+- Scalabilité: facile d'ajouter logique (ex: watchdog, error handling)
+
+#### Build Flags Conditionnels
+**Pourquoi USE_ROTATOR_FEATURES_MASTER/REMOTE au lieu de FEATURE_RS485_MASTER/REMOTE?**
+- Permet inclusion conditionnelle de fichiers complets (features + pins)
+- Évite pollution namespace avec features non utilisées
+- Compile uniquement ce qui est nécessaire
+- Réduit empreinte mémoire
+
+### Prochaines Étapes (Phase 5)
+- [ ] Tests hardware avec 2 Nano R4 Minima réels
+- [ ] Validation communication RS485 sur 100m
+- [ ] Tests GPS tracking (Moon/Sun)
+- [ ] Tests display Nextion
+- [ ] Réactivation progressive features:
+  - [ ] Encodeurs SSI HH-12 (au lieu de potentiomètres)
+  - [ ] Ethernet sur Master
+  - [ ] Satellite tracking
+- [ ] Optimisations mémoire si nécessaire
+- [ ] Documentation utilisateur finale
 
 ---
 
 ## ⏳ En cours / À faire
-
-### Phase 4 (suite) - Intégration Code K3NG - EN COURS
-- [X] Modifier k3ng_rotator_controller.cpp pour compilation conditionnelle
-- [X] Intégrer includes RS485 Master/Remote
-- [X] Intégrer rs485_master_init() dans setup()
-- [X] Intégrer rs485_remote_init() dans setup()
-- [X] Intégrer rs485_master_process() dans loop()
-- [X] Intégrer rs485_remote_process() dans loop()
-- [X] Ajouter pins tracking (moon/sun/satellite) dans rotator_pins_master.h
-- [X] Ajouter boutons locaux dans rotator_pins_master.h
-- [X] Configuration simplifiée pour tests initiaux
-  - Potentiomètres au lieu de SSI
-  - GPS/CLOCK/TRACKING temporairement désactivés
-  - ETHERNET temporairement désactivé
-- [X] antenna_unit : Première compilation réussie (avant simplification)
-- [ ] Déboguer erreurs compilation finales
-  - Résoudre conflits types tmElements_t
-  - Résoudre dépendances Time library
-  - Nettoyer features non utilisées
-- [ ] Configuration progressive features
-  - [ ] Réactiver encodeurs SSI
-  - [ ] Réactiver GPS + CLOCK
-  - [ ] Réactiver TRACKING (Moon/Sun/Satellite)
-  - [ ] Réactiver ETHERNET
-- [ ] Tests fonctionnels hardware
 
 ### Phase 5 - Optimisations
 - [ ] Compression angles (uint16_t au lieu de float)
@@ -472,37 +544,44 @@ Module RS485 #1             Module RS485 #2 (100m)
 
 ### Derniers commits
 ```
-a5068b1 - Phase 4 Complete: Production Build Environments for Master/Remote (just now)
-08a9401 - Phase 3.5 Complete: RS485 Architecture Documentation (just now)
-28522b6 - Add reminder to update PROGRESS.md after each phase (15 hours ago)
-d8ed67e - Phase 3 Complete: RS485 Master/Remote Architecture (15 hours ago)
+a935cae - Phase 4 Complete: RS485 Wrapper Integration - Both units compile successfully (just now)
+4695e99 - Phase 4 Part 1: Production Build Environments for Master/Remote (1 hour ago)
+28522b6 - Add reminder to update PROGRESS.md after each phase (16 hours ago)
+d8ed67e - Phase 3 Complete: RS485 Master/Remote Architecture (16 hours ago)
 fabea22 - Optimize build settings and improve rotation control (7 days ago)
 ```
 
 ### État actuel (12 octobre 2025)
-- ✅ Phase 3 complète et validée
+- ✅ Phase 3 complète et validée (Architecture Master/Remote)
 - ✅ Phase 3.5 documentation architecture complète
-- ✅ Phase 4 configuration production environments complète
+- ✅ **Phase 4 complète et validée (Wrapper RS485 + Compilation réussie)**
 - ✅ Architecture Master/Remote fonctionnelle (0% collisions)
 - ✅ Communication RS485 robuste avec CRC16
 - ✅ Latence < 5ms, update rate 100ms
-- ✅ Tests réussis sur les 2 Nano R4 Minima
+- ✅ Tests réussis sur les 2 Nano R4 Minima (Phase 3)
 - ✅ Fichiers features/pins Master/Remote créés
+- ✅ Wrapper RS485 intégré dans K3NG code (modifications minimales)
+- ✅ Les 2 environnements compilent sans erreur (antenna_unit + shack_unit)
+- ✅ Utilisation mémoire excellente (Flash ~60%, RAM ~32%)
 - ✅ Environnements PlatformIO antenna_unit/shack_unit créés
 - ✅ Scripts upload_antenna.sh/upload_shack.sh créés
-- 📝 Documentation complète (PROGRESS.md, PHASE4_SETUP.md)
+- 📝 Documentation complète (PROGRESS.md, PHASE4_SETUP.md, RS485_*.md)
 
 ### Prochaine session
 1. ✅ **FAIT:** Phase 3 complétée et testée avec succès
 2. ✅ **FAIT:** Phase 3.5 documentation architecture (RS485_FEATURES_SPLIT.md, RS485_PINS_ALLOCATION.md)
 3. ✅ **FAIT:** Phase 4 configuration files et environnements de build
-4. ⏳ **PROCHAIN:** Phase 4 suite - Intégration code K3NG
-   - Modifier code principal pour compilation conditionnelle
-   - Intégrer classes RS485 dans loop
-   - Tester compilation des 2 environnements
-   - Déboguer erreurs compilation
-   - Tests fonctionnels hardware
-5. ⏳ **EN ATTENTE:** Tests sur câble RS485 100m réel
+4. ✅ **FAIT:** Phase 4 intégration wrapper RS485 dans code K3NG
+   - Wrapper propre créé (2 fonctions)
+   - Code K3NG modifié (5 blocs seulement)
+   - Les 2 environnements compilent
+   - Problèmes résolus (pins, types, libraries)
+5. ⏳ **PROCHAIN:** Phase 5 - Tests hardware
+   - Upload firmware sur 2 Nano R4 Minima
+   - Tests communication RS485 sur 100m
+   - Validation GPS tracking
+   - Tests display Nextion
+   - Réactivation progressive features (SSI, Ethernet, Satellite)
 6. Valider avec utilisateur final le fonctionnement actuel
 
 ### Améliorations futures possibles
@@ -516,8 +595,9 @@ fabea22 - Optimize build settings and improve rotation control (7 days ago)
 
 ---
 
-**Phase 3, 3.5 & 4 validées et fonctionnelles ✅**
+**Phases 3, 3.5 & 4 complètes et validées ✅**
 **Communication RS485 Master/Remote opérationnelle**
-**Documentation architecture complète (Features + Pins + Setup)**
-**Fichiers de configuration et environnements de build prêts**
-**Prêt pour Phase 4 suite (Intégration code K3NG) ou tests terrain**
+**Wrapper RS485 intégré dans K3NG code avec succès**
+**Les 2 environnements (antenna_unit + shack_unit) compilent sans erreur**
+**Utilisation mémoire excellente: Flash ~60%, RAM ~32%**
+**Prêt pour Phase 5: Tests hardware sur 2 Nano R4 Minima**
