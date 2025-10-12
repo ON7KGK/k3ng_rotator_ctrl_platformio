@@ -51,9 +51,10 @@
 
 /* ========== NETWORKING (OPTIONAL) ========== */
 
-// Temporarily disabled for Phase 4 initial testing
-// #define FEATURE_ETHERNET                   // Ethernet interface (W5100/W5500) - OPTIONAL
-                                           // Uses SPI pins D10-D13 (conflicts with encoders on these pins)
+// Ethernet enabled for K3NG compilation
+// NOTE: If using SSI encoders, they must NOT use pins D10-D13 (SPI conflict)
+#define FEATURE_ETHERNET                   // Ethernet interface (W5100/W5500) - OPTIONAL
+                                           // Uses SPI pins D10-D13 (conflicts with preset encoders)
 
 /* ========== LANGUAGE ========== */
 

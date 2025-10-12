@@ -62,30 +62,28 @@
 
 /* ========== AZIMUTH POSITION SENSOR PINS ========== */
 
-// Option A: HH-12 AS5045 SSI Absolute Encoder (RECOMMENDED)
-#if defined(FEATURE_AZ_POSITION_HH12_AS5045_SSI) || defined(FEATURE_AZ_POSITION_HH12_AS5045_SSI_RELATIVE)
-  #define az_hh12_clock_pin 2               // SSI Clock (CLK)
-  #define az_hh12_cs_pin 3                  // SSI Chip Select (CS)
-  #define az_hh12_data_pin 4                // SSI Data Out (DO)
-#endif //FEATURE_AZ_POSITION_HH12_AS5045_SSI
+// HH-12 SSI pins - always define to avoid K3NG compilation errors
+// Set to 0 when using potentiometers instead
+#define az_hh12_clock_pin 0                 // SSI Clock (CLK) - D2 when using SSI
+#define az_hh12_cs_pin 0                    // SSI Chip Select (CS) - D3 when using SSI
+#define az_hh12_data_pin 0                  // SSI Data Out (DO) - D4 when using SSI
 
-// Option B: Analog Potentiometer (ALTERNATIVE)
+// Analog Potentiometer (when not using SSI)
 #ifdef FEATURE_AZ_POSITION_POTENTIOMETER
-  #define rotator_analog_az A6              // reads analog azimuth voltage from rotator
+  #define rotator_analog_az A2              // reads analog azimuth voltage (A6/A7 don't exist on Nano R4)
 #endif
 
 /* ========== ELEVATION POSITION SENSOR PINS ========== */
 
-// Option A: HH-12 AS5045 SSI Absolute Encoder (RECOMMENDED)
-#ifdef FEATURE_EL_POSITION_HH12_AS5045_SSI
-  #define el_hh12_clock_pin 5               // SSI Clock (CLK)
-  #define el_hh12_cs_pin 6                  // SSI Chip Select (CS)
-  #define el_hh12_data_pin 7                // SSI Data Out (DO)
-#endif //FEATURE_EL_POSITION_HH12_AS5045_SSI
+// HH-12 SSI pins - always define to avoid K3NG compilation errors
+// Set to 0 when using potentiometers instead
+#define el_hh12_clock_pin 0                 // SSI Clock (CLK) - D5 when using SSI
+#define el_hh12_cs_pin 0                    // SSI Chip Select (CS) - D6 when using SSI
+#define el_hh12_data_pin 0                  // SSI Data Out (DO) - D7 when using SSI
 
-// Option B: Analog Potentiometer (ALTERNATIVE)
+// Analog Potentiometer (when not using SSI)
 #ifdef FEATURE_EL_POSITION_POTENTIOMETER
-  #define rotator_analog_el A7              // reads analog elevation voltage
+  #define rotator_analog_el A3              // reads analog elevation voltage (A6/A7 don't exist on Nano R4)
 #endif
 
 /* ========== LIMIT SWITCHES (OPTIONAL) ========== */
