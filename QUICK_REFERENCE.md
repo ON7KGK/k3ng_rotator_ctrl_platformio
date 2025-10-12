@@ -55,10 +55,13 @@
 
 ### Build & Upload
 ```bash
-# Compiler
+# Compiler uniquement
 pio run -e antenna_unit
 
-# Upload (remplacer PORT par le port USB)
+# Upload avec auto-détection du port (recommandé)
+./upload_antenna.sh
+
+# Ou spécifier le port manuellement
 ./upload_antenna.sh /dev/cu.usbmodem1101
 ```
 
@@ -120,10 +123,13 @@ pio run -e antenna_unit
 
 ### Build & Upload
 ```bash
-# Compiler
+# Compiler uniquement
 pio run -e shack_unit
 
-# Upload (remplacer PORT par le port USB)
+# Upload avec auto-détection du port (recommandé)
+./upload_shack.sh
+
+# Ou spécifier le port manuellement
 ./upload_shack.sh /dev/cu.usbmodem1102
 ```
 
@@ -262,11 +268,16 @@ pio run -e shack_unit
 
 ### 2. Upload sur les cartes
 ```bash
-# ANTENNA Unit (vérifier le port USB)
-./upload_antenna.sh /dev/cu.usbmodem1101
+# ANTENNA Unit (auto-détection du port)
+./upload_antenna.sh
 
-# SHACK Unit (vérifier le port USB)
-./upload_shack.sh /dev/cu.usbmodem1102
+# SHACK Unit (auto-détection du port)
+./upload_shack.sh
+
+# Note: Brancher une seule carte à la fois pour éviter la confusion!
+# Ou spécifier manuellement le port si plusieurs cartes branchées:
+# ./upload_antenna.sh /dev/cu.usbmodem1101
+# ./upload_shack.sh /dev/cu.usbmodem1102
 ```
 
 ### 3. Vérifier la communication

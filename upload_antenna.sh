@@ -23,19 +23,27 @@ echo "  GPS: A4/A5 (Serial2)"
 echo "  Encoders: D2-D7 (if enabled)"
 echo ""
 
-# Check if port is specified
+# Auto-detect port or use specified one
 if [ -z "$1" ]; then
-    echo "Usage: ./upload_antenna.sh <port>"
-    echo ""
-    echo "Example: ./upload_antenna.sh /dev/cu.usbmodem1101"
-    echo ""
-    echo "Available ports:"
-    ls -1 /dev/cu.usb* 2>/dev/null || echo "  No USB devices found"
-    exit 1
-fi
+    # Auto-detect first available USB port
+    PORT=$(ls /dev/cu.usbmodem* 2>/dev/null | head -n 1)
 
-PORT=$1
-echo "Upload port: $PORT"
+    if [ -z "$PORT" ]; then
+        echo "❌ No USB device found!"
+        echo ""
+        echo "Available ports:"
+        ls -1 /dev/cu.usb* 2>/dev/null || echo "  No USB devices found"
+        echo ""
+        echo "Usage: ./upload_antenna.sh [port]"
+        echo "Example: ./upload_antenna.sh /dev/cu.usbmodem1101"
+        exit 1
+    fi
+
+    echo "✅ Auto-detected port: $PORT"
+else
+    PORT=$1
+    echo "Using specified port: $PORT"
+fi
 echo ""
 echo "Building and uploading..."
 echo ""
