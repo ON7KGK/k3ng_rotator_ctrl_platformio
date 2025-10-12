@@ -3,8 +3,8 @@
 **Projet:** K3NG Rotator Controller - Communication RS485
 **Hardware:** 2x Arduino Nano R4 Minima (Renesas RA4M1)
 **Distance:** 100m sur câble RS485
-**Branche:** NanoR4_Test_RS485
-**Date dernière mise à jour:** 11 octobre 2025
+**Branche:** NanoR4_Test
+**Date dernière mise à jour:** 12 octobre 2025
 
 > **⚠️ IMPORTANT:** Mettre à jour ce fichier après chaque phase complétée !
 > - Déplacer la phase de "⏳ En cours" vers "✅ Terminée"
@@ -192,18 +192,53 @@ Position updated: AZ=270.00 EL=44.80 Status=0x40
 
 ---
 
+## ✅ Phase 3.5 - Documentation Architecture (TERMINÉE)
+
+### Objectif
+Définir clairement les features et pins pour chaque unité avant Phase 4
+
+### Réalisations
+- ✅ `RS485_FEATURES_SPLIT.md` - Définition features Master/Remote
+  - Features actives/désactivées par unité
+  - Résolution conflits Serial1/Serial2
+  - Validation configuration GPS/Nextion/Ethernet
+- ✅ `RS485_PINS_ALLOCATION.md` - Allocation pins complète
+  - Master : Moteurs (A0-A3), GPS (A4-A5), RS485 (D0,D1,D8,D9)
+  - Remote : Nextion/LCD (A4-A5), Boutons (D2-D7,A0), RS485 (D0,D1,D8,D9)
+  - Encodeurs preset optionnels (D10-D13)
+  - Ethernet optionnel Master uniquement (D10-D13)
+
+### Décisions Validées
+- ✅ GPS uniquement sur Master (Serial2 A4/A5)
+- ✅ Nextion sur Remote via Serial2 (A4/A5) car pas de GPS
+- ✅ Ethernet uniquement sur Master (optionnel)
+- ✅ Boutons tracking Lune/Soleil sur Remote (D7, A0)
+- ✅ PSTRotator sur Serial USB uniquement (pas de relay RS485)
+- ✅ Configuration maximale : 18/20 pins utilisées sur Remote
+
+### Résultats
+- ✅ Documentation architecture complète
+- ✅ Allocation pins optimisée et sans conflit
+- ✅ Base solide pour Phase 4
+
+---
+
 ## ⏳ En cours / À faire
 
 ### Phase 4 - Intégration Code K3NG
-- [ ] Ajouter `#define FEATURE_RS485_MASTER` dans `rotator_features.h`
-- [ ] Ajouter `#define FEATURE_RS485_REMOTE` dans `rotator_features.h`
-- [ ] Intégrer lecture capteurs réels (potentiomètres/encodeurs)
+- [ ] Créer `rotator_features_master.h` et `rotator_features_remote.h`
+- [ ] Créer `rotator_pins_master.h` et `rotator_pins_remote.h`
+- [ ] Ajouter `#define FEATURE_RS485_MASTER` dans features master
+- [ ] Ajouter `#define FEATURE_RS485_REMOTE` dans features remote
+- [ ] Intégrer lecture capteurs réels (potentiomètres/encodeurs SSI)
 - [ ] Intégrer contrôle moteurs réels
-- [ ] Intégrer données GPS (Serial2)
-- [ ] Gérer affichage Nextion/LCD sur Remote
-- [ ] Gérer boutons/encodeurs sur Remote
+- [ ] Intégrer données GPS (Serial2 A4/A5) sur Master
+- [ ] Gérer affichage Nextion (Serial2 A4/A5) sur Remote
+- [ ] Gérer affichage LCD I2C (A4/A5) sur Remote (alternative)
+- [ ] Gérer boutons manuels sur Remote (D2-D7, A0)
+- [ ] Gérer encodeurs preset sur Remote (D10-D13, A1)
 - [ ] Résoudre conflits mémoire RAM
-- [ ] Créer environnements `antenna_unit` et `shack_unit`
+- [ ] Créer environnements `antenna_unit` et `shack_unit` dans platformio.ini
 
 ### Phase 5 - Optimisations
 - [ ] Compression angles (uint16_t au lieu de float)
@@ -352,10 +387,37 @@ Module RS485 #1             Module RS485 #2 (100m)
 
 ## 📝 Notes
 
+### Derniers commits
+```
+28522b6 - Add reminder to update PROGRESS.md after each phase (15 hours ago)
+d8ed67e - Phase 3 Complete: RS485 Master/Remote Architecture (15 hours ago)
+e4fea3e - Fix DFU upload for Nano R4 environment (7 days ago)
+d32cbed - Add Arduino Nano R4 support with A6/A7 pins enabled (7 days ago)
+```
+
+### État actuel (12 octobre 2025)
+- ✅ Phase 3 complète et validée
+- ✅ Phase 3.5 documentation architecture complète
+- ✅ Architecture Master/Remote fonctionnelle (0% collisions)
+- ✅ Communication RS485 robuste avec CRC16
+- ✅ Latence < 5ms, update rate 100ms
+- ✅ Tests réussis sur les 2 Nano R4 Minima
+- ✅ Allocation pins Master/Remote validée
+- ✅ Features split Master/Remote documenté
+- 📝 Documentation complète dans PROGRESS.md
+
 ### Prochaine session
-1. Décider si on continue Phase 4 (intégration K3NG) ou si on commit Phase 3
-2. Tests sur câble 100m réel recommandés
-3. Valider avec utilisateur final le fonctionnement actuel
+1. ✅ **FAIT:** Phase 3 complétée et testée avec succès
+2. ✅ **FAIT:** Phase 3.5 documentation architecture (RS485_FEATURES_SPLIT.md, RS485_PINS_ALLOCATION.md)
+3. ⏳ **EN ATTENTE:** Tests sur câble RS485 100m réel
+4. ⏳ **PROCHAIN:** Démarrer Phase 4 (intégration code K3NG)
+   - Créer fichiers features/pins séparés pour Master/Remote
+   - Intégrer lecture capteurs réels
+   - Intégrer contrôle moteurs réels
+   - Gérer GPS sur Serial2 (Master)
+   - Gérer affichage Nextion/LCD (Remote)
+   - Gérer boutons/encodeurs (Remote)
+5. Valider avec utilisateur final le fonctionnement actuel
 
 ### Améliorations futures possibles
 - Mode JOG continu (bouton pressé = mouvement continu)
@@ -363,8 +425,12 @@ Module RS485 #1             Module RS485 #2 (100m)
 - Display graphique des positions
 - Enregistrement presets via Remote
 - Logs communication pour debug
+- Compression angles (uint16_t au lieu de float)
+- Mode Burst pour tracking satellite (20ms)
 
 ---
 
-**Phase 3 validée et fonctionnelle ✅**
-**Prêt pour Phase 4 ou mise en production test**
+**Phase 3 & 3.5 validées et fonctionnelles ✅**
+**Communication RS485 Master/Remote opérationnelle**
+**Documentation architecture complète (Features + Pins)**
+**Prêt pour Phase 4 (Intégration K3NG) ou tests terrain**
