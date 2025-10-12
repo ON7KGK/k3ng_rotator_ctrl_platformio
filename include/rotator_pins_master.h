@@ -69,21 +69,24 @@
 #define az_hh12_data_pin 0                  // SSI Data Out (DO) - D4 when using SSI
 
 // Analog Potentiometer (when not using SSI)
+// Uses digital pins D2/D5 as analog inputs since A0-A3 are used for motors
+// and A4/A5 for GPS, and A6/A7 don't exist on Nano R4 Minima
 #ifdef FEATURE_AZ_POSITION_POTENTIOMETER
-  #define rotator_analog_az A2              // reads analog azimuth voltage (A6/A7 don't exist on Nano R4)
+  #define rotator_analog_az 2               // D2 as analog input - Azimuth potentiometer
 #endif
 
 /* ========== ELEVATION POSITION SENSOR PINS ========== */
 
 // HH-12 SSI pins - always define to avoid K3NG compilation errors
 // Set to 0 when using potentiometers instead
-#define el_hh12_clock_pin 0                 // SSI Clock (CLK) - D5 when using SSI
+#define el_hh12_clock_pin 0                 // SSI Clock (CLK) - D5 when using SSI (conflict if using D5 for pot)
 #define el_hh12_cs_pin 0                    // SSI Chip Select (CS) - D6 when using SSI
 #define el_hh12_data_pin 0                  // SSI Data Out (DO) - D7 when using SSI
 
 // Analog Potentiometer (when not using SSI)
+// Uses digital pin D5 as analog input
 #ifdef FEATURE_EL_POSITION_POTENTIOMETER
-  #define rotator_analog_el A3              // reads analog elevation voltage (A6/A7 don't exist on Nano R4)
+  #define rotator_analog_el 5               // D5 as analog input - Elevation potentiometer
 #endif
 
 /* ========== LIMIT SWITCHES (OPTIONAL) ========== */
