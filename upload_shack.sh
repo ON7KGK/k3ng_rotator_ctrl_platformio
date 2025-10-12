@@ -45,20 +45,41 @@ else
     echo "Using specified port: $PORT"
 fi
 echo ""
+echo "Building firmware..."
+echo ""
+
+# Build first (no upload yet)
+~/.platformio/penv/bin/pio run -e shack_unit
+
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "=========================================="
+    echo "Build failed!"
+    echo "=========================================="
+    exit 1
+fi
+
+echo ""
 echo "=========================================="
 echo "⚠️  IMPORTANT: Arduino Nano R4 Bootloader"
 echo "=========================================="
 echo ""
-echo "1. Press RESET button 2x QUICKLY on your Nano R4"
-echo "2. Wait for the LED to blink SLOWLY (bootloader mode)"
-echo "3. Press ENTER to start upload"
+echo "BUILD SUCCESSFUL! Now ready to upload."
 echo ""
-read -p "Press ENTER when ready..." dummy
+echo "WHEN YOU PRESS ENTER:"
+echo "1. You'll have 8 seconds"
+echo "2. QUICKLY press RESET button 2x on your Nano R4"
+echo "3. LED will blink SLOWLY (bootloader mode)"
+echo "4. Upload will start automatically"
 echo ""
-echo "Building and uploading..."
+read -p "Press ENTER to start upload countdown..." dummy
 echo ""
+echo "⏱️  Upload starting in 2 seconds..."
+echo "👉 Press RESET 2x NOW!"
+echo ""
+sleep 2
 
-# Build and upload using PlatformIO
+# Upload only (already built)
 ~/.platformio/penv/bin/pio run -e shack_unit --target upload --upload-port "$PORT"
 
 if [ $? -eq 0 ]; then
