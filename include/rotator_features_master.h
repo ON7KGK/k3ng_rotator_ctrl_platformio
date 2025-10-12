@@ -31,24 +31,30 @@
 /* ========== POSITION SENSORS ========== */
 
 // Choose ONE option for Azimuth position sensing:
-#define FEATURE_AZ_POSITION_HH12_AS5045_SSI          // SSI absolute encoder (HH-12)
-// #define FEATURE_AZ_POSITION_POTENTIOMETER         // Alternative: analog potentiometer
+// Temporarily using potentiometers for Phase 4 initial testing
+// #define FEATURE_AZ_POSITION_HH12_AS5045_SSI          // SSI absolute encoder (HH-12)
+#define FEATURE_AZ_POSITION_POTENTIOMETER         // Alternative: analog potentiometer
 
 // Choose ONE option for Elevation position sensing:
-#define FEATURE_EL_POSITION_HH12_AS5045_SSI          // SSI absolute encoder (HH-12)
-// #define FEATURE_EL_POSITION_POTENTIOMETER         // Alternative: analog potentiometer
+// Temporarily using potentiometers for Phase 4 initial testing
+// #define FEATURE_EL_POSITION_HH12_AS5045_SSI          // SSI absolute encoder (HH-12)
+#define FEATURE_EL_POSITION_POTENTIOMETER         // Alternative: analog potentiometer
 
 /* ========== GPS & TRACKING ========== */
 
-#define FEATURE_GPS                        // GPS on Serial2 (A4/A5)
-#define FEATURE_CLOCK                      // Real-time clock for tracking
-#define FEATURE_MOON_TRACKING              // Moon tracking calculations
-#define FEATURE_SUN_TRACKING               // Sun tracking calculations
-#define FEATURE_SATELLITE_TRACKING         // Satellite tracking support
+// Temporarily disabled for Phase 4 initial testing
+// Will be re-enabled once basic functionality is validated
+// #define FEATURE_GPS                        // GPS on Serial2 (A4/A5)
+// #define OPTION_GPS_USE_TINY_GPS_LIBRARY    // Use TinyGPS library for GPS parsing
+// #define FEATURE_CLOCK                      // Real-time clock for tracking
+// #define FEATURE_MOON_TRACKING              // Moon tracking calculations
+// #define FEATURE_SUN_TRACKING               // Sun tracking calculations
+// #define FEATURE_SATELLITE_TRACKING         // Satellite tracking support
 
 /* ========== NETWORKING (OPTIONAL) ========== */
 
-#define FEATURE_ETHERNET                   // Ethernet interface (W5100/W5500) - OPTIONAL
+// Temporarily disabled for Phase 4 initial testing
+// #define FEATURE_ETHERNET                   // Ethernet interface (W5100/W5500) - OPTIONAL
                                            // Uses SPI pins D10-D13 (conflicts with encoders on these pins)
 
 /* ========== LANGUAGE ========== */

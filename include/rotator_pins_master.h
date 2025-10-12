@@ -71,7 +71,7 @@
 
 // Option B: Analog Potentiometer (ALTERNATIVE)
 #ifdef FEATURE_AZ_POSITION_POTENTIOMETER
-  #define rotator_analog_az A3              // reads analog azimuth voltage from rotator - pin 4 on Yaesu connector
+  #define rotator_analog_az A6              // reads analog azimuth voltage from rotator
 #endif
 
 /* ========== ELEVATION POSITION SENSOR PINS ========== */
@@ -85,7 +85,7 @@
 
 // Option B: Analog Potentiometer (ALTERNATIVE)
 #ifdef FEATURE_EL_POSITION_POTENTIOMETER
-  #define rotator_analog_el 0               // reads analog elevation voltage (TBD - need free analog pin)
+  #define rotator_analog_el A7              // reads analog elevation voltage
 #endif
 
 /* ========== LIMIT SWITCHES (OPTIONAL) ========== */
@@ -115,14 +115,15 @@
 #endif
 
 /* ========== LOCAL CONTROL BUTTONS (OPTIONAL) ========== */
-// Uncomment these if you want local buttons at antenna site for manual control
+// Local buttons at antenna site for manual control
 // Useful for maintenance at 100m from shack
+// Set to 0 to disable, or assign a pin number to enable
 
-// #define button_cw 0                      // normally open button to ground for manual CW rotation
-// #define button_ccw 0                     // normally open button to ground for manual CCW rotation
-// #define button_up 0                      // normally open button to ground for manual up elevation
-// #define button_down 0                    // normally open button to ground for manual down rotation
-// #define button_stop 0                    // normally open button to ground for STOP
+#define button_cw 0                         // normally open button to ground for manual CW rotation
+#define button_ccw 0                        // normally open button to ground for manual CCW rotation
+#define button_up 0                         // normally open button to ground for manual up elevation
+#define button_down 0                       // normally open button to ground for manual down rotation
+#define button_stop 0                       // normally open button to ground for STOP
 
 /* ========== INDICATOR LEDS (OPTIONAL) ========== */
 
@@ -162,6 +163,30 @@
 
 #define az_preset_pot 0                     // preset potentiometer (not used)
 #define preset_start_button 0               // preset start button (on Remote)
+
+/* ========== TRACKING PINS (OPTIONAL) ========== */
+
+#ifdef FEATURE_MOON_TRACKING
+  #define moon_tracking_active_pin 0        // output - high when moon tracking is active
+  #define moon_tracking_activate_line 0     // input - activate moon tracking
+  #define moon_tracking_button 0            // input - button to activate moon tracking
+#endif
+
+#ifdef FEATURE_SUN_TRACKING
+  #define sun_tracking_active_pin 0         // output - high when sun tracking is active
+  #define sun_tracking_activate_line 0      // input - activate sun tracking
+  #define sun_tracking_button 0             // input - button to activate sun tracking
+#endif
+
+#ifdef FEATURE_SATELLITE_TRACKING
+  #define satellite_tracking_active_pin 0   // output - high when satellite tracking is active
+  #define satellite_tracking_activate_line 0 // input - activate satellite tracking
+  #define satellite_tracking_button 0       // input - button to activate satellite tracking
+#endif
+
+#ifdef FEATURE_GPS
+  #define gps_sync 0                        // input - GPS sync pulse
+#endif
 
 /* ========== MISCELLANEOUS ========== */
 

@@ -1132,9 +1132,15 @@
 #endif
 #ifdef HARDWARE_TEST
   #include "rotator_features_test.h"
-#endif    
-#if !defined(HARDWARE_CUSTOM)
-  #include "rotator_features.h" 
+#endif
+
+// RS485 Master/Remote Architecture - Phase 4
+#ifdef USE_ROTATOR_FEATURES_MASTER
+  #include "rotator_features_master.h"   // ANTENNA Unit (Master) configuration
+#elif defined(USE_ROTATOR_FEATURES_REMOTE)
+  #include "rotator_features_remote.h"   // SHACK Unit (Remote) configuration
+#elif !defined(HARDWARE_CUSTOM)
+  #include "rotator_features.h"          // Default configuration
 #endif      
   
 #include "rotator_dependencies.h"
@@ -1258,8 +1264,14 @@
 #ifdef HARDWARE_TEST
   #include "rotator_pins_test.h"
 #endif
-#if !defined(HARDWARE_CUSTOM)
-  #include "rotator_pins.h"
+
+// RS485 Master/Remote Architecture - Phase 4
+#ifdef USE_ROTATOR_PINS_MASTER
+  #include "rotator_pins_master.h"        // ANTENNA Unit (Master) pin allocation
+#elif defined(USE_ROTATOR_PINS_REMOTE)
+  #include "rotator_pins_remote.h"        // SHACK Unit (Remote) pin allocation
+#elif !defined(HARDWARE_CUSTOM)
+  #include "rotator_pins.h"               // Default pin allocation
 #endif
 
 #if defined(az_stepper_motor_direction) || defined(el_stepper_motor_direction)
@@ -1878,6 +1890,26 @@ struct config_t {
   byte vSS2transient_message_status = NEXTION_TRANSIENT_MESSAGE_IDLE;  
 #endif
 
+/* ------------------ RS485 Master/Remote Architecture - Phase 4 */
+#if defined(FEATURE_RS485_MASTER) || defined(FEATURE_RS485_REMOTE)
+  #include "rs485_config.h"
+  #include "rs485_protocol.h"
+#endif
+
+#ifdef FEATURE_RS485_MASTER
+  #include "rs485_master.h"
+  // Global RS485 Master state
+  extern RotatorState rotatorState;
+  extern unsigned long lastBroadcastTime;
+#endif
+
+#ifdef FEATURE_RS485_REMOTE
+  #include "rs485_remote.h"
+  // Global RS485 Remote state
+  extern RotatorState remoteRotatorState;
+  extern unsigned long lastRemoteUpdate;
+#endif
+
 /* ------------------ Include function prototypes (for PlatformIO) */
 #include "rotator_functions.h"
 
@@ -1903,6 +1935,20 @@ void setup() {
 
   run_this_once();
 
+  // RS485 Master/Remote initialization - Phase 4
+  #ifdef FEATURE_RS485_MASTER
+    rs485_master_init();
+    #ifdef DEBUG_RS485
+      control_port->println("RS485 Master initialized");
+    #endif
+  #endif
+
+  #ifdef FEATURE_RS485_REMOTE
+    rs485_remote_init();
+    #ifdef DEBUG_RS485
+      control_port->println("RS485 Remote initialized");
+    #endif
+  #endif
 
 }
 
@@ -2002,6 +2048,15 @@ void loop() {
 
   #if defined(FEATURE_REMOTE_UNIT_SLAVE) || defined(FEATURE_MASTER_WITH_SERIAL_SLAVE) || defined(FEATURE_MASTER_WITH_ETHERNET_SLAVE)
     service_master_remote_link_state();
+  #endif
+
+  // RS485 Master/Remote service - Phase 4
+  #ifdef FEATURE_RS485_MASTER
+    rs485_master_process();
+  #endif
+
+  #ifdef FEATURE_RS485_REMOTE
+    rs485_remote_process();
   #endif
 
   #ifdef FEATURE_JOYSTICK_CONTROL
