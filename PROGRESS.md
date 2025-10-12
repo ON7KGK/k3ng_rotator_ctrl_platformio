@@ -276,19 +276,29 @@ Créer les fichiers de configuration et environnements de build pour les unités
 
 ## ⏳ En cours / À faire
 
-### Phase 4 (suite) - Intégration Code K3NG
-- [ ] Modifier `rotator_hardware.h` pour inclure features/pins conditionnels
-- [ ] Intégrer `rs485_master_loop()` dans loop principale
-- [ ] Intégrer `rs485_remote_loop()` dans loop principale
-- [ ] Adapter lecture capteurs position (SSI/potentiomètres)
-- [ ] Adapter contrôle moteurs avec commandes RS485
-- [ ] Configurer GPS sur Serial2 (Master)
-- [ ] Configurer Nextion sur Serial2 (Remote)
-- [ ] Implémenter gestion boutons sur Remote
-- [ ] Implémenter encodeurs preset sur Remote
-- [ ] Tester build `antenna_unit`
-- [ ] Tester build `shack_unit`
-- [ ] Déboguer erreurs compilation
+### Phase 4 (suite) - Intégration Code K3NG - EN COURS
+- [X] Modifier k3ng_rotator_controller.cpp pour compilation conditionnelle
+- [X] Intégrer includes RS485 Master/Remote
+- [X] Intégrer rs485_master_init() dans setup()
+- [X] Intégrer rs485_remote_init() dans setup()
+- [X] Intégrer rs485_master_process() dans loop()
+- [X] Intégrer rs485_remote_process() dans loop()
+- [X] Ajouter pins tracking (moon/sun/satellite) dans rotator_pins_master.h
+- [X] Ajouter boutons locaux dans rotator_pins_master.h
+- [X] Configuration simplifiée pour tests initiaux
+  - Potentiomètres au lieu de SSI
+  - GPS/CLOCK/TRACKING temporairement désactivés
+  - ETHERNET temporairement désactivé
+- [X] antenna_unit : Première compilation réussie (avant simplification)
+- [ ] Déboguer erreurs compilation finales
+  - Résoudre conflits types tmElements_t
+  - Résoudre dépendances Time library
+  - Nettoyer features non utilisées
+- [ ] Configuration progressive features
+  - [ ] Réactiver encodeurs SSI
+  - [ ] Réactiver GPS + CLOCK
+  - [ ] Réactiver TRACKING (Moon/Sun/Satellite)
+  - [ ] Réactiver ETHERNET
 - [ ] Tests fonctionnels hardware
 
 ### Phase 5 - Optimisations
