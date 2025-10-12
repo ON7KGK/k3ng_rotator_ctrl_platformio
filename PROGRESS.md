@@ -319,18 +319,27 @@ Créer les fichiers de configuration et environnements de build pour les unités
 # Phase 2 - Test protocole
 ./upload_test_protocol.sh
 
-# Phase 3 - Master/Remote
+# Phase 3 - Master/Remote (Tests)
 ./upload_master.sh    # Sur Nano R4 ANTENNA
 ./upload_remote.sh    # Sur Nano R4 SHACK
+
+# Phase 4 - Production
+./upload_antenna.sh /dev/cu.usbmodem1101  # ANTENNA Unit (Master)
+./upload_shack.sh /dev/cu.usbmodem1102    # SHACK Unit (Remote)
 ```
 
 ### Environnements PlatformIO
 
 ```ini
+# Tests de développement
 [env:test_rs485]           # Phase 1 - Test basique
 [env:test_rs485_protocol]  # Phase 2 - Test protocole CRC
-[env:test_rs485_master]    # Phase 3 - Master (ANTENNA)
-[env:test_rs485_remote]    # Phase 3 - Remote (SHACK)
+[env:test_rs485_master]    # Phase 3 - Test Master (ANTENNA)
+[env:test_rs485_remote]    # Phase 3 - Test Remote (SHACK)
+
+# Production
+[env:antenna_unit]         # Phase 4 - ANTENNA Unit (Master) - Production
+[env:shack_unit]           # Phase 4 - SHACK Unit (Remote) - Production
 ```
 
 ---
@@ -339,25 +348,38 @@ Créer les fichiers de configuration et environnements de build pour les unités
 
 ```
 include/
-├── rs485_config.h          # Configuration globale RS485
-├── rs485_protocol.h        # Structures et protocole
-├── rs485_master.h          # Déclarations Master
-└── rs485_remote.h          # Déclarations Remote
+├── rs485_config.h              # Configuration globale RS485
+├── rs485_protocol.h            # Structures et protocole
+├── rs485_master.h              # Déclarations Master
+├── rs485_remote.h              # Déclarations Remote
+├── rotator_features_master.h   # Features ANTENNA Unit (Phase 4)
+├── rotator_features_remote.h   # Features SHACK Unit (Phase 4)
+├── rotator_pins_master.h       # Pins ANTENNA Unit (Phase 4)
+└── rotator_pins_remote.h       # Pins SHACK Unit (Phase 4)
 
 src/
-├── rs485_common.cpp        # Fonctions communes (CRC, frames)
-├── rs485_master.cpp        # Implémentation Master
-├── rs485_remote.cpp        # Implémentation Remote
-├── test_rs485.cpp          # Phase 1 - Test basique
-├── test_rs485_protocol.cpp # Phase 2 - Test protocole
-├── test_rs485_master.cpp   # Phase 3 - Test Master
-└── test_rs485_remote.cpp   # Phase 3 - Test Remote
+├── rs485_common.cpp            # Fonctions communes (CRC, frames)
+├── rs485_master.cpp            # Implémentation Master
+├── rs485_remote.cpp            # Implémentation Remote
+├── test_rs485.cpp              # Phase 1 - Test basique
+├── test_rs485_protocol.cpp     # Phase 2 - Test protocole
+├── test_rs485_master.cpp       # Phase 3 - Test Master
+└── test_rs485_remote.cpp       # Phase 3 - Test Remote
 
 Scripts:
-├── upload_test_rs485.sh    # Upload Phase 1
-├── upload_test_protocol.sh # Upload Phase 2
-├── upload_master.sh        # Upload Master
-└── upload_remote.sh        # Upload Remote
+├── upload_test_rs485.sh        # Upload Phase 1
+├── upload_test_protocol.sh     # Upload Phase 2
+├── upload_master.sh            # Upload Master (Phase 3)
+├── upload_remote.sh            # Upload Remote (Phase 3)
+├── upload_antenna.sh           # Upload ANTENNA Unit (Phase 4)
+└── upload_shack.sh             # Upload SHACK Unit (Phase 4)
+
+Documentation:
+├── PROGRESS.md                 # Ce fichier - progression développement
+├── RS485_IMPLEMENTATION_PLAN.md # Plan initial RS485
+├── RS485_FEATURES_SPLIT.md     # Répartition features Master/Remote
+├── RS485_PINS_ALLOCATION.md    # Allocation pins détaillée
+└── PHASE4_SETUP.md             # Guide setup Phase 4
 ```
 
 ---
@@ -440,10 +462,11 @@ Module RS485 #1             Module RS485 #2 (100m)
 
 ### Derniers commits
 ```
+a5068b1 - Phase 4 Complete: Production Build Environments for Master/Remote (just now)
+08a9401 - Phase 3.5 Complete: RS485 Architecture Documentation (just now)
 28522b6 - Add reminder to update PROGRESS.md after each phase (15 hours ago)
 d8ed67e - Phase 3 Complete: RS485 Master/Remote Architecture (15 hours ago)
-e4fea3e - Fix DFU upload for Nano R4 environment (7 days ago)
-d32cbed - Add Arduino Nano R4 support with A6/A7 pins enabled (7 days ago)
+fabea22 - Optimize build settings and improve rotation control (7 days ago)
 ```
 
 ### État actuel (12 octobre 2025)
