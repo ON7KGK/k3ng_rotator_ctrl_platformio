@@ -93,6 +93,14 @@ byte current_az_state();
 
 byte current_el_state();
 
+#if defined(FEATURE_LCD_DISPLAY)
+void update_lcd_display();
+char * idle_status();
+#if defined(OPTION_DISPLAY_DIRECTION_STATUS)
+char * azimuth_direction(int azimuth_in);
+#endif
+#endif
+
 #if defined(FEATURE_NEXTION_DISPLAY)
 void service_nextion_display();
 void convert_polar_to_cartesian(byte coordinate_conversion,double azimuth_in,double elevation_in,double* x,double* y);
