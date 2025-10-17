@@ -42,24 +42,34 @@
 
 void rs485_wrapper_setup() {
 
+  // Serial already initialized in main setup()
+  Serial.println(F("\n=== RS485 Wrapper Setup Called ==="));
+
   #ifdef FEATURE_RS485_MASTER
+    Serial.println(F("FEATURE_RS485_MASTER is defined"));
     // Initialize RS485 Master
     rs485_master_init();
 
     #ifdef DEBUG_RS485
       Serial.println(F("RS485 Master initialized"));
     #endif
+  #else
+    Serial.println(F("WARNING: FEATURE_RS485_MASTER is NOT defined!"));
   #endif
 
   #ifdef FEATURE_RS485_REMOTE
+    Serial.println(F("FEATURE_RS485_REMOTE is defined"));
     // Initialize RS485 Remote
     rs485_remote_init();
 
     #ifdef DEBUG_RS485
       Serial.println(F("RS485 Remote initialized"));
     #endif
+  #else
+    Serial.println(F("WARNING: FEATURE_RS485_REMOTE is NOT defined!"));
   #endif
 
+  Serial.println(F("=== RS485 Wrapper Setup Complete ==="));
 }
 
 /* ========== Loop Function ========== */

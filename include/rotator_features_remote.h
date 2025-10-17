@@ -37,12 +37,13 @@
 /* ========== USER INTERFACE - DISPLAY ========== */
 
 // Choose ONE display option:
-#define FEATURE_NEXTION_DISPLAY            // Nextion display on Serial2 (A4/A5)
+// #define FEATURE_NEXTION_DISPLAY         // Nextion display on Serial2 (A4/A5)
                                            // Serial2 available because NO GPS on Remote
+#define FEATURE_SAINSMART_I2C_LCD          // SainSmart I2C LCD 20x4 (address 0x3F) on A4/A5 (SDA/SCL)
 // #define FEATURE_ADAFRUIT_I2C_LCD        // Alternative: I2C LCD on A4/A5 (SDA/SCL)
 // #define FEATURE_4_BIT_LCD_DISPLAY       // Alternative: 4-bit LCD (uses 6 pins)
 
-// Note: If using Nextion, also configure it in rotator_k3ngdisplay.h
+// Note: Display configured for I2C address 0x3F (or 0x27 - use I2C scanner to detect)
 
 /* ========== USER INTERFACE - BUTTONS ========== */
 

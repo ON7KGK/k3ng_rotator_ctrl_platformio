@@ -25,7 +25,7 @@
 #define RS485_RE_PIN        9       // Receiver Enable (LOW = réception)
 
 // Paramètres série
-#define RS485_BAUD_RATE     19200   // Vitesse optimale pour 100m
+#define RS485_BAUD_RATE     9600    // 9600 bauds - fiable sur 100m (25% utilisation pour broadcast 100ms)
 #define RS485_DATA_BITS     SERIAL_8N1
 
 // ============================================================================

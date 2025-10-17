@@ -62,10 +62,11 @@
 
 /* ========== DISABLED FEATURES (on Remote instead) ========== */
 
-// User interface features are on the Remote unit
+// User interface features are on the Remote unit (in shack)
 // #define FEATURE_NEXTION_DISPLAY         // Display on Remote unit
 // #define FEATURE_4_BIT_LCD_DISPLAY       // Display on Remote unit
 // #define FEATURE_ADAFRUIT_I2C_LCD        // Display on Remote unit
+// #define FEATURE_SAINSMART_I2C_LCD       // Display on Remote unit
 
 // Manual control via Remote unit
 // Buttons CAN be present on Master for local control if needed (100m from shack)

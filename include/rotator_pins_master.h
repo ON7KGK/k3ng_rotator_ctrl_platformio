@@ -24,8 +24,8 @@
 
 /* ========== AZIMUTH MOTOR CONTROL PINS ========== */
 
-#define rotate_cw A0                        // goes high to activate rotator R (CW) rotation - pin 1 on Yaesu connector
-#define rotate_ccw A1                       // goes high to activate rotator L (CCW) rotation - pin 2 on Yaesu connector
+#define rotate_cw 2                        // goes high to activate rotator R (CW) rotation - pin 1 on Yaesu connector
+#define rotate_ccw 3                       // goes high to activate rotator L (CCW) rotation - pin 2 on Yaesu connector
 #define rotate_cw_ccw 0                     // goes high for both CW and CCW rotation (not used)
 #define rotate_cw_pwm 0                     // optional - PWM CW output (set to 0 to disable)
 #define rotate_ccw_pwm 0                    // optional - PWM CCW output (set to 0 to disable)
@@ -40,8 +40,8 @@
 
 /* ========== ELEVATION MOTOR CONTROL PINS ========== */
 #ifdef FEATURE_ELEVATION_CONTROL
-  #define rotate_up A2                      // goes high to activate rotator elevation up
-  #define rotate_down A3                    // goes high to activate rotator elevation down
+  #define rotate_up 4                      // goes high to activate rotator elevation up
+  #define rotate_down 5                    // goes high to activate rotator elevation down
   #define rotate_up_or_down 0               // goes high when elevation up or down is activated (not used)
   #define rotate_up_pwm 0                   // optional - PWM UP output (set to 0 to disable)
   #define rotate_down_pwm 0                 // optional - PWM DOWN output (set to 0 to disable)
@@ -69,10 +69,10 @@
 #define az_hh12_data_pin 0                  // SSI Data Out (DO) - D4 when using SSI
 
 // Analog Potentiometer (when not using SSI)
-// Uses digital pins D2/D5 as analog inputs since A0-A3 are used for motors
-// and A4/A5 for GPS, and A6/A7 don't exist on Nano R4 Minima
+// Uses analog pin A1 for azimuth potentiometer
+// A0 is used for motor control, A4/A5 for GPS, and A6/A7 don't exist on Nano R4 Minima
 #ifdef FEATURE_AZ_POSITION_POTENTIOMETER
-  #define rotator_analog_az 2               // D2 as analog input - Azimuth potentiometer
+  #define rotator_analog_az A1               // A1 as analog input - Azimuth potentiometer
 #endif
 
 /* ========== ELEVATION POSITION SENSOR PINS ========== */

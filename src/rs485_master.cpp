@@ -224,6 +224,8 @@ void RS485_Master::setStatus(uint8_t flags) {
 // ============================================================================
 
 void rs485_master_init() {
+    // Serial already initialized in main setup()
+    // Just initialize the Master instance
     if (!masterInstance) {
         masterInstance = new RS485_Master();
     }

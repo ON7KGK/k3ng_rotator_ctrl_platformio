@@ -16,8 +16,8 @@
 
                                                               */
 
-#define FEATURE_4_BIT_LCD_DISPLAY
-// #define FEATURE_ADAFRUIT_I2C_LCD
+// #define FEATURE_4_BIT_LCD_DISPLAY
+// //#define FEATURE_ADAFRUIT_I2C_LCD
 // #define FEATURE_YOURDUINO_I2C_LCD
 // #define FEATURE_RFROBOT_I2C_DISPLAY
 // #define FEATURE_YWROBOT_I2C_DISPLAY
@@ -45,9 +45,14 @@
 #endif
 #ifdef HARDWARE_TEST
   #include "rotator_features_test.h"
-#endif    
-#if !defined(HARDWARE_CUSTOM)
-  #include "rotator_features.h" 
+#endif
+// RS485 Master/Remote Architecture
+#ifdef USE_ROTATOR_FEATURES_MASTER
+  #include "rotator_features_master.h"
+#elif defined(USE_ROTATOR_FEATURES_REMOTE)
+  #include "rotator_features_remote.h"
+#elif !defined(HARDWARE_CUSTOM)
+  #include "rotator_features.h"
 #endif   
 #ifdef HARDWARE_M0UPU
   #include "rotator_pins_m0upu.h"

@@ -269,6 +269,8 @@ float RS485_Remote::getSuccessRate() {
 // ============================================================================
 
 void rs485_remote_init() {
+    // Serial already initialized in main setup()
+    // Just initialize the Remote instance
     if (!remoteInstance) {
         remoteInstance = new RS485_Remote();
     }

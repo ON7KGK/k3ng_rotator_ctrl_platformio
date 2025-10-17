@@ -1290,8 +1290,13 @@
 #endif
 #ifdef HARDWARE_TEST
   #include "rotator_settings_test.h"
-#endif      
-#if !defined(HARDWARE_CUSTOM)
+#endif
+// RS485 Master/Remote Architecture
+#ifdef USE_ROTATOR_SETTINGS_MASTER
+  #include "rotator_settings_master.h"
+#elif defined(USE_ROTATOR_SETTINGS_REMOTE)
+  #include "rotator_settings_remote.h"
+#elif !defined(HARDWARE_CUSTOM)
   #include "rotator_settings.h"
 #endif
 
@@ -1921,6 +1926,21 @@ struct config_t {
 /* ------------------ let's start doing some stuff now that we got the formalities out of the way --------------------*/
 
 void setup() {
+
+  // Initialize USB Serial for debug FIRST (before anything else)
+  #if defined(FEATURE_RS485_MASTER) || defined(FEATURE_RS485_REMOTE)
+    Serial.begin(9600);
+    delay(500);  // Give Serial time to stabilize
+    Serial.println(F("\n\n=== K3NG Rotator Controller ==="));
+    Serial.println(F("Arduino Nano R4 Minima"));
+    #ifdef FEATURE_RS485_MASTER
+      Serial.println(F("Mode: RS485 MASTER (Antenna Unit)"));
+    #endif
+    #ifdef FEATURE_RS485_REMOTE
+      Serial.println(F("Mode: RS485 REMOTE (Shack Unit)"));
+    #endif
+    Serial.println(F("Initializing...\n"));
+  #endif
 
   initialize_serial();
 
@@ -11091,7 +11111,7 @@ void initialize_pins(){
 
 void initialize_serial(){
 
-  #if defined(FEATURE_REMOTE_UNIT_SLAVE) || defined(FEATURE_YAESU_EMULATION) || defined(FEATURE_EASYCOM_EMULATION) || defined(FEATURE_CLOCK) || defined(UNDER_DEVELOPMENT_REMOTE_UNIT_COMMANDS)
+  #if defined(FEATURE_REMOTE_UNIT_SLAVE) || defined(FEATURE_YAESU_EMULATION) || defined(FEATURE_EASYCOM_EMULATION) || defined(FEATURE_CLOCK) || defined(UNDER_DEVELOPMENT_REMOTE_UNIT_COMMANDS) || defined(FEATURE_RS485_MASTER) || defined(FEATURE_RS485_REMOTE)
     control_port = CONTROL_PORT_MAPPED_TO;
     control_port->begin(CONTROL_PORT_BAUD_RATE);
     #if defined(OPTION_SEND_STRING_OUT_CONTROL_PORT_WHEN_INITIALIZING)

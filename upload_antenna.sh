@@ -1,108 +1,71 @@
 #!/bin/bash
-# Upload script for ANTENNA Unit (Master) - Phase 4
-# Hardware: Arduino Nano R4 Minima at antenna site
-# Role: RS485 Master, motor control, position sensors, GPS tracking
+# Script d'upload pour ANTENNA Unit (Master) - Arduino Nano R4 Minima
+# Configuration: No display, GPS, Motor control, RS485 Master
+# Usage: ./upload_antenna.sh
 
 echo "=========================================="
-echo "ANTENNA Unit (Master) Upload Script"
+echo "  ANTENNA Unit (Master) Upload Script"
 echo "=========================================="
 echo ""
 echo "Hardware: Arduino Nano R4 Minima"
-echo "Role: RS485 Master"
-echo "Features:"
-echo "  - Motor control (AZ/EL)"
-echo "  - Position sensors (SSI/Potentiometer)"
-echo "  - GPS tracking (Serial2)"
-echo "  - Moon/Sun/Satellite tracking"
-echo "  - Optional Ethernet"
-echo ""
-echo "Pins allocation:"
-echo "  RS485: D0/D1 (Serial1), D8/D9 (DE/RE)"
-echo "  Motors: A0-A3"
-echo "  GPS: A4/A5 (Serial2)"
-echo "  Encoders: D2-D7 (if enabled)"
+echo "Display: None (display is on Remote)"
+echo "Role: RS485 Master, Motor Control, GPS"
 echo ""
 
-# Auto-detect port or use specified one
-if [ -z "$1" ]; then
-    # Auto-detect first available USB port
-    PORT=$(ls /dev/cu.usbmodem* 2>/dev/null | head -n 1)
-
-    if [ -z "$PORT" ]; then
-        echo "❌ No USB device found!"
-        echo ""
-        echo "Available ports:"
-        ls -1 /dev/cu.usb* 2>/dev/null || echo "  No USB devices found"
-        echo ""
-        echo "Usage: ./upload_antenna.sh [port]"
-        echo "Example: ./upload_antenna.sh /dev/cu.usbmodem1101"
-        exit 1
-    fi
-
-    echo "✅ Auto-detected port: $PORT"
-else
-    PORT=$1
-    echo "Using specified port: $PORT"
-fi
-echo ""
-echo "Building firmware..."
-echo ""
-
-# Build first (no upload yet)
+echo "🔨 Compilation du firmware antenna_unit..."
 ~/.platformio/penv/bin/pio run -e antenna_unit
-
-if [ $? -ne 0 ]; then
-    echo ""
-    echo "=========================================="
-    echo "Build failed!"
-    echo "=========================================="
-    exit 1
-fi
-
-echo ""
-echo "=========================================="
-echo "⚠️  IMPORTANT: Arduino Nano R4 Bootloader"
-echo "=========================================="
-echo ""
-echo "BUILD SUCCESSFUL! Now ready to upload."
-echo ""
-echo "WHEN YOU PRESS ENTER:"
-echo "1. You'll have 8 seconds"
-echo "2. QUICKLY press RESET button 2x on your Nano R4"
-echo "3. LED will blink SLOWLY (bootloader mode)"
-echo "4. Upload will start automatically"
-echo ""
-read -p "Press ENTER to start upload countdown..." dummy
-echo ""
-echo "⏱️  Upload starting in 2 seconds..."
-echo "👉 Press RESET 2x NOW!"
-echo ""
-sleep 2
-
-# Upload only (already built)
-~/.platformio/penv/bin/pio run -e antenna_unit --target upload --upload-port "$PORT"
 
 if [ $? -eq 0 ]; then
     echo ""
+    echo "✅ Compilation réussie!"
+    echo ""
     echo "=========================================="
-    echo "Upload successful!"
+    echo "⚡ DOUBLE-CLIQUE SUR LE BOUTON RESET MAINTENANT!"
     echo "=========================================="
     echo ""
-    echo "Next steps:"
-    echo "1. Open Serial Monitor at 115200 baud"
-    echo "2. Verify GPS data reception (Serial2)"
-    echo "3. Check RS485 communication"
-    echo "4. Test motor control"
-    echo "5. Verify position sensor readings"
+    echo "Instructions:"
+    echo "1. Appuie DEUX FOIS rapidement sur le bouton RESET"
+    echo "2. La LED orange devrait pulser LENTEMENT"
+    echo "3. Appuie sur ENTRÉE quand la LED pulse lentement"
+    echo ""
+    read -p "Appuie sur ENTRÉE quand c'est fait... "
+
+    echo ""
+    echo "📤 Upload en cours via DFU..."
+    ~/.platformio/packages/tool-dfuutil-arduino/dfu-util --device 0x2341:0x0374 -D .pio/build/antenna_unit/firmware.bin -a0 -Q
+
+    if [ $? -eq 0 ]; then
+        echo ""
+        echo "=========================================="
+        echo "🎉 Upload réussi!"
+        echo "=========================================="
+        echo ""
+        echo "Next steps:"
+        echo "1. Connect GPS module to Serial2 (A4/A5)"
+        echo "2. Connect motor control outputs"
+        echo "3. Connect SSI encoders (or potentiometers)"
+        echo "4. Connect RS485 (D0/D1 + D8/D9)"
+        echo "5. Power up and check Serial Monitor"
+        echo ""
+    else
+        echo ""
+        echo "=========================================="
+        echo "❌ Upload échoué"
+        echo "=========================================="
+        echo ""
+        echo "Troubleshooting:"
+        echo "1. Réessaie le double-clic RESET"
+        echo "2. Vérifie que la LED pulse lentement"
+        echo "3. Vérifie la connexion USB"
+        echo "4. Essaie sur un autre port USB"
+        echo ""
+    fi
 else
     echo ""
     echo "=========================================="
-    echo "Upload failed!"
+    echo "❌ Erreur de compilation"
     echo "=========================================="
     echo ""
-    echo "Troubleshooting:"
-    echo "1. Check USB connection"
-    echo "2. Verify correct port"
-    echo "3. Try resetting the board"
-    echo "4. Check for compilation errors above"
+    echo "Vérifie les erreurs ci-dessus et corrige-les"
+    echo ""
 fi

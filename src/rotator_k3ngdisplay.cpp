@@ -66,16 +66,11 @@
 
 #if defined(FEATURE_SAINSMART_I2C_LCD)
   #include <LiquidCrystal_I2C.h>
-  #define I2C_ADDR      0x27
-  #define BACKLIGHT_PIN 3
-  #define En_pin        2
-  #define Rw_pin        1
-  #define Rs_pin        0
-  #define D4_pin        4
-  #define D5_pin        5
-  #define D6_pin        6
-  #define D7_pin        7
-  LiquidCrystal_I2C lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin, BACKLIGHT_PIN, POSITIVE);  
+  #define I2C_ADDR 0x3F
+  // Using modern LiquidCrystal_I2C library (marcoschwartz) with simplified API
+  // Format: LiquidCrystal_I2C(address, columns, rows)
+  // Common I2C addresses: 0x27 or 0x3F (use I2C scanner to detect)
+  LiquidCrystal_I2C lcd(I2C_ADDR, 20, 4);
 #endif //FEATURE_SAINSMART_I2C_LCD
 
 #if defined(FEATURE_MIDAS_I2C_DISPLAY)
@@ -157,6 +152,11 @@ void K3NGdisplay::initialize(){
     #else
       lcd.backlight();
     #endif
+  #endif
+
+  #ifdef FEATURE_SAINSMART_I2C_LCD
+    lcd.init();         // Initialize I2C LCD
+    lcd.backlight();    // Turn on backlight
   #endif
 
   #ifdef FEATURE_4_BIT_LCD_DISPLAY

@@ -1,19 +1,20 @@
 #!/bin/bash
-# Script d'upload pour SHACK Unit (Remote) - Arduino Nano R4 Minima
-# Configuration: I2C LCD SainSmart @ 0x3F, RS485 Remote
-# Usage: ./upload_shack.sh
+# Upload RS485 Remote TEST to Shack Unit - Arduino Nano R4 Minima
+# This is a simple test that receives position broadcasts
+# Usage: ./upload_test_shack.sh
 
 echo "=========================================="
-echo "   SHACK Unit (Remote) Upload Script"
+echo "  RS485 Remote TEST Upload (Shack)"
 echo "=========================================="
 echo ""
 echo "Hardware: Arduino Nano R4 Minima"
-echo "Display: SainSmart I2C LCD 20x4 @ 0x3F"
-echo "Role: RS485 Remote, User Interface"
+echo "Test: Receive AZ/EL broadcasts from Master"
+echo "RS485: Serial1 @ 9600 bauds"
+echo "Debug: USB Serial @ 9600 bauds"
 echo ""
 
-echo "🔨 Compilation du firmware shack_unit..."
-~/.platformio/penv/bin/pio run -e shack_unit
+echo "🔨 Compilation du test RS485 Remote..."
+~/.platformio/penv/bin/pio run -e test_rs485_remote
 
 if [ $? -eq 0 ]; then
     echo ""
@@ -32,7 +33,7 @@ if [ $? -eq 0 ]; then
 
     echo ""
     echo "📤 Upload en cours via DFU..."
-    ~/.platformio/packages/tool-dfuutil-arduino/dfu-util --device 0x2341:0x0374 -D .pio/build/shack_unit/firmware.bin -a0 -Q
+    ~/.platformio/packages/tool-dfuutil-arduino/dfu-util --device 0x2341:0x0374 -D .pio/build/test_rs485_remote/firmware.bin -a0 -Q
 
     if [ $? -eq 0 ]; then
         echo ""
@@ -41,11 +42,20 @@ if [ $? -eq 0 ]; then
         echo "=========================================="
         echo ""
         echo "Next steps:"
-        echo "1. Open Serial Monitor at 115200 baud"
-        echo "2. Check I2C LCD display (address 0x3F)"
-        echo "3. Check RS485 communication with Master"
-        echo "4. Verify position data on LCD"
-        echo "5. Test manual control buttons"
+        echo "1. Connect RS485 module to D0/D1 (Serial1)"
+        echo "2. Connect DE/RE to D8/D9"
+        echo "3. Monitor with: ./monitor_simple.sh /dev/cu.usbmodem1101"
+        echo ""
+        echo "Expected output:"
+        echo "  RS485 Remote Test starting..."
+        echo "  RX: AZ=180.00 EL=45.00"
+        echo "  RX: AZ=180.50 EL=45.10"
+        echo "  (repeating every 100ms)"
+        echo ""
+        echo "If you see 'Connection lost':"
+        echo "  -> Check RS485 cable A-B connections"
+        echo "  -> Verify Master is powered and running"
+        echo "  -> Check DE/RE pins (D8/D9)"
         echo ""
     else
         echo ""
